@@ -29,6 +29,7 @@ import com.copart.rtlaisdk.ui.theme.CopartBlue
 import com.copart.rtlaisdk.ui.theme.Error1
 import com.copart.rtlaisdk.ui.theme.Success1
 import com.copart.rtlaisdk.ui.theme.labelSmallBold
+import com.copart.rtlaisdk.utils.RTLStatusConstants
 import com.copart.rtlaisdk.utils.buildAnnotatedStringWithBoldDynamicValue
 
 @Composable
@@ -51,13 +52,13 @@ fun RTLListItem(rtlData: RTLListItem) {
     }
 
     val status = when (rtlData.status) {
-        "Auto Completed" -> "Completed"
+        RTLStatusConstants.AUTO_COMPLETED -> RTLStatusConstants.COMPLETED
         else -> rtlData.status
     }
 
     val statusBgColor = when (status) {
-        "Pending" -> Error1
-        "Completed" -> Success1
+        RTLStatusConstants.PENDING -> Error1
+        RTLStatusConstants.COMPLETED -> Success1
         else -> CopartBlue
     }
 
