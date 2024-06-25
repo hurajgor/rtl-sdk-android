@@ -34,13 +34,71 @@ val Typography = Typography(
     */
 )
 
-val Typography.labelSmallBold: TextStyle
+val labelNormal14: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontFamily = FontFamily.Default,
+            fontSize = 14.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.5.sp
+        )
+    }
+
+val labelNormal16: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontFamily = FontFamily.Default,
+            fontSize = 16.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.5.sp
+        )
+    }
+
+val labelBold12: TextStyle
     @Composable
     get() {
         return TextStyle(
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Bold,
             fontSize = 12.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.5.sp
+        )
+    }
+
+val labelBold14: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.5.sp
+        )
+    }
+
+val labelBold16: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.5.sp
+        )
+    }
+
+val labelBold18: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
             lineHeight = 16.sp,
             letterSpacing = 0.5.sp
         )
