@@ -37,7 +37,6 @@ class RTLRepositoryImpl(
             rtlApi.decodeVin(vin)
         }
 }
-}
 
 suspend fun <T> makeApiCall(
     dispatcher: CoroutineDispatcher,
