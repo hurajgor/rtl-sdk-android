@@ -5,3 +5,7 @@ object RTLStatusConstants {
     const val AUTO_COMPLETED = "Auto Completed"
     const val COMPLETED = "Completed"
 }
+
+object VEHICLE_TYPE_CODE_MAPPING {
+    const val AUTOMOBILES = "V"
+}
