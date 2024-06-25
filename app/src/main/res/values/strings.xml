@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">RTL AI SDK</string>
+    <string name="vin">VIN</string>
+    <string name="claimPound">Claim #</string>
+    <string name="seller">Seller</string>
+    <string name="generated">Generated</string>
+    <string name="data_is_loaded">Data is loaded.</string>
+    <string name="network_error_description">A network error occurred. Check your connection or try again</string>
+    <string name="network_error_title">Oh no!</string>
+    <string name="network_error_retry_button_text">Try again</string>
+</resources>
