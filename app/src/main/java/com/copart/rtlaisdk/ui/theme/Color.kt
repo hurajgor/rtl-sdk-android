@@ -14,3 +14,6 @@ val CopartBlue = Color(0xff0d5db8)
 
 val Error1 = Color(0xffAD1920)
 val Success1 = Color(0xff489D40)
+
+val WhiteSmoke = Color(0xFFF0F0F0)
+val GreyChateau = Color(0xFF939AA4)

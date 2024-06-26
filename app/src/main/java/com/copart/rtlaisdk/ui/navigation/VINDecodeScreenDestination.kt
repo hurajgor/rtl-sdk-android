@@ -1,0 +1,23 @@
+package com.copart.rtlaisdk.ui.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import com.copart.rtlaisdk.ui.vehicleDetails.VehicleDetailsContract
+import com.copart.rtlaisdk.ui.vehicleDetails.VehicleDetailsViewModel
+import com.copart.rtlaisdk.ui.vehicleDetails.composables.VINDecodeScreen
+import org.koin.androidx.compose.getViewModel
+
+@Composable
+fun VINDecodeScreenDestination(navController: NavController) {
+    val viewModel = getViewModel<VehicleDetailsViewModel>()
+    VINDecodeScreen(
+        state = viewModel.viewState.value,
+        effectFlow = viewModel.effect,
+        onEventSent = { event -> viewModel.setEvent(event) },
+        onNavigationRequested = { navigationEffect ->
+            if (navigationEffect is VehicleDetailsContract.Effect.Navigation.ToVINDecodeResults) {
+                // TODO: Navigate to results screen
+            }
+        }
+    )
+}

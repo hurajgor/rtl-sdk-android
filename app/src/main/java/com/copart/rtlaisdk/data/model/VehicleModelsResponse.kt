@@ -7,10 +7,10 @@ data class VehicleModelsResponse(
 )
 
 data class VehicleModelsResponseBody(
-    @SerializedName("list") var list: ArrayList<List> = arrayListOf(),
+    @SerializedName("list") var list: ArrayList<VehicleModelsList> = arrayListOf(),
     @SerializedName("moreDataAvailable") var moreDataAvailable: Boolean? = false
 )
 
-data class List(
+data class VehicleModelsList(
     @SerializedName("desc") var desc: String? = null
 )
