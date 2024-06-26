@@ -66,7 +66,7 @@ fun RTLListScreen(
                 contentColor = Color.White
             ) {
                 Text(
-                    text = "Determine New RTL",
+                    text = stringResource(R.string.determine_new_rtl),
                     modifier = Modifier.padding(8.dp),
                     style = labelNormal14
                 )

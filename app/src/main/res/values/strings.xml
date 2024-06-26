@@ -8,4 +8,13 @@
     <string name="network_error_description">A network error occurred. Check your connection or try again</string>
     <string name="network_error_title">Oh no!</string>
     <string name="network_error_retry_button_text">Try again</string>
+    <string name="tap_below_to_scan_the_vin_barcode_or_qr_code">Tap below to scan the VIN barcode or QR code</string>
+    <string name="vehicle_details">Vehicle Details</string>
+    <string name="vin_placeholder">AAA000AA00AAAA00</string>
+    <string name="enter_vin_manually_and_decode_details">Enter VIN manually and decode details</string>
+    <string name="determine_new_rtl">Determine New RTL</string>
+    <string name="or">OR</string>
+    <string name="claim_pound">Claim #</string>
+    <string name="claim_number">Claim Number</string>
+    <string name="decode">Decode</string>
 </resources>

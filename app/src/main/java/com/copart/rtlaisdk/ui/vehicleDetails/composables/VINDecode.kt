@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -98,7 +99,7 @@ fun DecodeButton(onItemClick: (String) -> Unit) {
                     modifier = Modifier.rotate(45f)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Decode")
+                Text(stringResource(R.string.decode))
             }
         }
     }
@@ -111,7 +112,7 @@ fun ClaimEntry() {
             .fillMaxWidth()
     ) {
         Text(
-            text = "Claim Number",
+            text = stringResource(R.string.claim_number),
             style = labelBold16
         )
         TextField(
@@ -120,7 +121,7 @@ fun ClaimEntry() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
-            placeholder = { Text("Claim #") },
+            placeholder = { Text(stringResource(R.string.claim_pound)) },
             textStyle = labelNormal14,
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
@@ -143,7 +144,7 @@ fun VINManualEntry(onItemClick: (String) -> Unit) {
             .fillMaxWidth()
     ) {
         Text(
-            text = "Enter VIN manually and decode details",
+            text = stringResource(R.string.enter_vin_manually_and_decode_details),
             modifier = Modifier
                 .fillMaxWidth(),
             style = labelNormal16,
@@ -151,7 +152,7 @@ fun VINManualEntry(onItemClick: (String) -> Unit) {
             textAlign = TextAlign.Center,
         )
         Text(
-            text = "VIN",
+            text = stringResource(id = R.string.vin),
             style = labelBold16,
             modifier = Modifier.padding(top = 12.dp)
         )
@@ -161,7 +162,7 @@ fun VINManualEntry(onItemClick: (String) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
-            placeholder = { Text("AAA000AA00AAAA00") },
+            placeholder = { Text(stringResource(R.string.vin_placeholder)) },
             trailingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.camera_drk),
@@ -188,7 +189,7 @@ fun VINManualEntry(onItemClick: (String) -> Unit) {
 @Composable
 fun VINDecodeHeader() {
     Text(
-        text = "Vehicle Details",
+        text = stringResource(R.string.vehicle_details),
         style = labelNormal16,
         textAlign = TextAlign.Center,
         modifier = Modifier.fillMaxWidth(),
@@ -209,7 +210,7 @@ fun ORDivider() {
                 .weight(1f)
                 .padding(end = 8.dp)
         )
-        Text(text = "OR")
+        Text(text = stringResource(R.string.or))
         HorizontalDivider(
             modifier = Modifier
                 .weight(1f)
@@ -230,7 +231,7 @@ fun VINScan(onItemClick: (String) -> Unit) {
             .padding(top = 2.dp)
     ) {
         Text(
-            text = "Tap below to scan the VIN barcode or QR code",
+            text = stringResource(R.string.tap_below_to_scan_the_vin_barcode_or_qr_code),
             modifier = Modifier
                 .fillMaxWidth(),
             style = labelNormal16,
