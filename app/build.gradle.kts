@@ -93,6 +93,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android")
 
+    // Lottie
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
+
+    // Icons
+    implementation("br.com.devsrsouza.compose.icons:tabler-icons:1.1.0")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.0")
