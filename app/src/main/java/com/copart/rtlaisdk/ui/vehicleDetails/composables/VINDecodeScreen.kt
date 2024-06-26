@@ -11,7 +11,6 @@ import androidx.compose.ui.res.stringResource
 import com.copart.rtlaisdk.R
 import com.copart.rtlaisdk.ui.base.SIDE_EFFECTS_KEY
 import com.copart.rtlaisdk.ui.common.NetworkError
-import com.copart.rtlaisdk.ui.common.Progress
 import com.copart.rtlaisdk.ui.vehicleDetails.VehicleDetailsContract
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -49,7 +48,6 @@ fun VINDecodeScreen(
     ) {
         it
         when {
-            state.isVehicleMakesLoading || state.isVehicleYearsLoading -> Progress()
             state.isError -> NetworkError { onEventSent(VehicleDetailsContract.Event.Retry) }
             else -> VINDecode {
                 onEventSent(
