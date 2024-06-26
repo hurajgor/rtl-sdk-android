@@ -10,6 +10,7 @@ class RTLListContract {
     sealed class Event : ViewEvent {
         object Retry : Event()
         data class RTLListItemSelection(val rtlListItem: RTLListItem) : Event()
+        object NewRTLRequest : Event()
     }
 
     data class State(
@@ -23,6 +24,7 @@ class RTLListContract {
 
         sealed class Navigation : Effect() {
             data class ToRTLDetails(val requestId: String) : Navigation()
+            object ToVINDecode : Navigation()
         }
     }
 

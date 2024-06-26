@@ -18,6 +18,8 @@ fun RTLListScreenDestination(navController: NavController) {
             if (navigationEffect is RTLListContract.Effect.Navigation.ToRTLDetails) {
 //                navController.navigateToRTLDetails(navigationEffect.requestId)
             }
-        }
-    )
+            if (navigationEffect is RTLListContract.Effect.Navigation.ToVINDecode) {
+                navController.navigateToVinDecode()
+            }
+        })
 }

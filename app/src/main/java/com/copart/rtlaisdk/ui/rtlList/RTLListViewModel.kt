@@ -27,6 +27,9 @@ class RTLListViewModel(private val rtlRepository: RTLRepository) :
             }
 
             is RTLListContract.Event.Retry -> getRtlList()
+            RTLListContract.Event.NewRTLRequest -> setEffect {
+                RTLListContract.Effect.Navigation.ToVINDecode
+            }
         }
     }
 
