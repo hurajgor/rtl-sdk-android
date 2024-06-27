@@ -39,6 +39,10 @@ fun VINDecodeScreen(
                 is VehicleDetailsContract.Effect.Navigation.ToVINDecodeResults -> onNavigationRequested(
                     effect
                 )
+
+                is VehicleDetailsContract.Effect.Navigation.ToBarcodeScan -> onNavigationRequested(
+                    effect
+                )
             }
         }?.collect()
     }
@@ -49,13 +53,26 @@ fun VINDecodeScreen(
         it
         when {
             state.isError -> NetworkError { onEventSent(VehicleDetailsContract.Event.Retry) }
-            else -> VINDecode {
-                onEventSent(
-                    VehicleDetailsContract.Event.Decode(
-                        it
+            else -> VINDecode(
+                onVinChanged = { vin -> onEventSent(VehicleDetailsContract.Event.OnVINChanged(vin)) },
+                onClaimNoChanged = { claimNo ->
+                    onEventSent(
+                        VehicleDetailsContract.Event.OnClaimNoChanged(
+                            claimNo
+                        )
                     )
-                )
-            }
+                },
+                onDecodeClicked = {
+                    onEventSent(
+                        VehicleDetailsContract.Event.OnDecodeClicked(
+                            state.vinNumber
+                        )
+                    )
+                },
+                onBarcodeScanClicked = {
+                    onEventSent(VehicleDetailsContract.Event.OnBarcodeScanClicked)
+                }
+            )
         }
     }
 

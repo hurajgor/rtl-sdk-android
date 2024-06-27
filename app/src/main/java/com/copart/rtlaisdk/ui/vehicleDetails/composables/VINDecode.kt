@@ -1,6 +1,7 @@
 package com.copart.rtlaisdk.ui.vehicleDetails.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -50,7 +53,12 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.Key
 
 @Composable
-fun VINDecode(onItemClick: (String) -> Unit) {
+fun VINDecode(
+    onVinChanged: (String) -> Unit,
+    onClaimNoChanged: (String) -> Unit,
+    onDecodeClicked: () -> Unit,
+    onBarcodeScanClicked: () -> Unit
+) {
 
     val scrollState = rememberScrollState()
 
@@ -62,17 +70,17 @@ fun VINDecode(onItemClick: (String) -> Unit) {
             .verticalScroll(scrollState),
     ) {
         VINDecodeHeader()
-        VINScan {}
+        VINScan(onBarcodeScanClicked)
         ORDivider()
-        VINManualEntry {}
+        VINManualEntry(onVinChanged, onBarcodeScanClicked)
         ORDivider()
-        ClaimEntry()
-        DecodeButton {}
+        ClaimEntry(onClaimNoChanged)
+        DecodeButton(onDecodeClicked)
     }
 }
 
 @Composable
-fun DecodeButton(onItemClick: (String) -> Unit) {
+fun DecodeButton(onDecodeClicked: () -> Unit) {
     var isValid = true // Replace with your validation logic
     Column(
         modifier = Modifier
@@ -81,7 +89,7 @@ fun DecodeButton(onItemClick: (String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { /* Handle button click */ },
+            onClick = { onDecodeClicked() },
             shape = ButtonDefaults.shape, // This uses the default rounded shape
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (isValid) CopartBlue else GreyChateau,
@@ -106,7 +114,10 @@ fun DecodeButton(onItemClick: (String) -> Unit) {
 }
 
 @Composable
-fun ClaimEntry() {
+fun ClaimEntry(onClaimNoChanged: (String) -> Unit) {
+
+    val claimNumber = remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,8 +127,11 @@ fun ClaimEntry() {
             style = labelBold16
         )
         TextField(
-            value = "", // replace with a mutable state if you want to handle the text changes
-            onValueChange = {}, // replace with a function to handle the text changes
+            value = claimNumber.value,
+            onValueChange = { newValue ->
+                claimNumber.value = newValue
+                onClaimNoChanged(newValue)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
@@ -138,7 +152,10 @@ fun ClaimEntry() {
 
 
 @Composable
-fun VINManualEntry(onItemClick: (String) -> Unit) {
+fun VINManualEntry(onVinChanged: (String) -> Unit, onBarcodeScanClicked: () -> Unit) {
+
+    val vinText = remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,8 +174,11 @@ fun VINManualEntry(onItemClick: (String) -> Unit) {
             modifier = Modifier.padding(top = 12.dp)
         )
         TextField(
-            value = "", // replace with a mutable state if you want to handle the text changes
-            onValueChange = {}, // replace with a function to handle the text changes
+            value = vinText.value,
+            onValueChange = { newValue ->
+                vinText.value = newValue
+                onVinChanged(newValue)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
@@ -170,6 +190,9 @@ fun VINManualEntry(onItemClick: (String) -> Unit) {
                     modifier = Modifier
                         .size(25.dp)
                         .padding(0.dp)
+                        .clickable {
+                            onBarcodeScanClicked()
+                        }
                 )
             },
             textStyle = labelNormal14,
@@ -220,7 +243,7 @@ fun ORDivider() {
 }
 
 @Composable
-fun VINScan(onItemClick: (String) -> Unit) {
+fun VINScan(onBarcodeScanClicked: () -> Unit) {
 
     val barcodeScanAnim by rememberLottieComposition(
         spec = LottieCompositionSpec.RawRes(R.raw.barcodescan)
@@ -243,7 +266,9 @@ fun VINScan(onItemClick: (String) -> Unit) {
             iterations = LottieConstants.IterateForever,
             speed = 0.85f,
             isPlaying = true,
-            modifier = Modifier.height((getWindowHeight().toDp * 0.3f).dp)
+            modifier = Modifier
+                .height((getWindowHeight().toDp * 0.3f).dp)
+                .clickable { onBarcodeScanClicked() }
         )
     }
 }
@@ -251,5 +276,9 @@ fun VINScan(onItemClick: (String) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun VINDecodePreview() {
-    VINDecode {}
+    VINDecode(
+        onVinChanged = {},
+        onClaimNoChanged = {},
+        onDecodeClicked = {},
+        onBarcodeScanClicked = {})
 }

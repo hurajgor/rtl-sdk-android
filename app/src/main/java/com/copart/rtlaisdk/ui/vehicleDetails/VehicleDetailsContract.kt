@@ -8,7 +8,10 @@ class VehicleDetailsContract {
 
     sealed class Event : ViewEvent {
         data object Retry : Event()
-        data class Decode(val vin: String) : Event()
+        data class OnDecodeClicked(val vin: String) : Event()
+        data class OnVINChanged(val vin: String) : Event()
+        data class OnClaimNoChanged(val claimNo: String) : Event()
+        data object OnBarcodeScanClicked : Event()
     }
 
     data class State(
@@ -22,6 +25,7 @@ class VehicleDetailsContract {
 
         sealed class Navigation : Effect() {
             data class ToVINDecodeResults(val requestId: String) : Navigation()
+            data object ToBarcodeScan : Navigation()
         }
     }
 
