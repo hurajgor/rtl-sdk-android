@@ -315,7 +315,9 @@ fun VINDecodePreview() {
         yearList = emptyList(),
         makeList = emptyList(),
         modelsResponse = VehicleModelsResponse(),
-        imageUris = mutableStateListOf<Uri?>(null, null, null, null),
+        imageUris = remember {
+            mutableStateListOf<Uri?>(null, null, null, null)
+        },
         onVinChanged = {},
         onGenerateRTL = {},
         onMakeSelected = {},
