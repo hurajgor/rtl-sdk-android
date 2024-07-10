@@ -1,5 +1,7 @@
 package com.copart.rtlaisdk.ui.vehicleDetails
 
+import android.net.Uri
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.viewModelScope
 import com.copart.rtlaisdk.data.RTLRepository
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
@@ -87,6 +89,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         yearsList = emptyList(),
         makesList = emptyList(),
         modelsResponse = VehicleModelsResponse(),
+        imageUris = mutableStateListOf<Uri?>(null, null, null, null),
         isLoading = false,
         isError = false,
     )
@@ -110,6 +113,11 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
             is VehicleDetailsContract.Event.OnModelSelected -> setState { copy(model = event.model) }
             is VehicleDetailsContract.Event.OnYearSelected -> setState { copy(year = event.year) }
+            is VehicleDetailsContract.Event.OnImageUrisChanged -> {
+                val imageUris = viewState.value.imageUris.toMutableList()
+                imageUris[event.index] = event.imageUri
+                setState { copy(imageUris = imageUris) }
+            }
         }
     }
 }

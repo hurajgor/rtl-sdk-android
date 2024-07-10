@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.ui.vehicleDetails
 
+import android.net.Uri
 import com.copart.rtlaisdk.data.model.VehicleMakesResponseBody
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
 import com.copart.rtlaisdk.data.model.VehicleYearsResponseBody
@@ -16,6 +17,7 @@ class VehicleDetailsContract {
         data class OnYearSelected(val year: String) : Event()
         data class OnMakeSelected(val make: String) : Event()
         data class OnModelSelected(val model: String) : Event()
+        data class OnImageUrisChanged(val imageUri: Uri?, val index: Int) : Event()
     }
 
     data class State(
@@ -26,6 +28,7 @@ class VehicleDetailsContract {
         val yearsList: List<VehicleYearsResponseBody>,
         val makesList: List<VehicleMakesResponseBody>,
         val modelsResponse: VehicleModelsResponse,
+        val imageUris: List<Uri?>,
         val isLoading: Boolean,
         val isError: Boolean,
     ) : ViewState

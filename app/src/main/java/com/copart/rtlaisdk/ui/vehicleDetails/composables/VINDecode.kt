@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -73,11 +74,13 @@ fun VINDecode(
     yearList: List<VehicleYearsResponseBody>,
     makeList: List<VehicleMakesResponseBody>,
     modelsResponse: VehicleModelsResponse,
+    imageUris: List<Uri?>,
     onVinChanged: (String) -> Unit,
     onYearSelected: (String) -> Unit,
     onMakeSelected: (String) -> Unit,
     onModelSelected: (String) -> Unit,
-    onGenerateRTL: () -> Unit
+    onGenerateRTL: () -> Unit,
+    onImageUrisChanged: (Uri?, Int) -> Unit
 ) {
 
     val scrollState = rememberScrollState()
@@ -90,7 +93,7 @@ fun VINDecode(
             .padding(16.dp),
     ) {
         VINDecodeHeader()
-        ImageTilePicker()
+        ImageTilePicker(imageUris, onImageUrisChanged)
         CustomTextField(
             stringResource(id = R.string.vin),
             stringResource(R.string.vin_placeholder),
@@ -154,10 +157,9 @@ fun initializeImagePlaceholders(): List<ImagePlaceholder> {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ImageTilePicker() {
+fun ImageTilePicker(imageUris: List<Uri?>, onImageUrisChanged: (Uri?, Int) -> Unit) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
-    var imageUris by remember { mutableStateOf(List<Uri?>(4) { null }) } // Store URIs for each tile
     var currentTileIndex by remember { mutableStateOf(-1) } // Track the current tile index
     var tempPhotoUri by remember { mutableStateOf(value = Uri.EMPTY) }
     val imagePlaceholders = initializeImagePlaceholders()
@@ -177,9 +179,7 @@ fun ImageTilePicker() {
         contract = ActivityResultContracts.TakePicture(),
         onResult = { isSuccess ->
             if (isSuccess && currentTileIndex != -1) {
-                val updatedImageUris = imageUris.toMutableList()
-                updatedImageUris[currentTileIndex] = tempPhotoUri
-                imageUris = updatedImageUris
+                onImageUrisChanged(tempPhotoUri, currentTileIndex)
             }
         }
     )
@@ -188,10 +188,7 @@ fun ImageTilePicker() {
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
             if (uri != null && currentTileIndex != -1) {
-                // Update the URI for the current tile
-                val updatedImageUris = imageUris.toMutableList()
-                updatedImageUris[currentTileIndex] = uri
-                imageUris = updatedImageUris
+                onImageUrisChanged(uri, currentTileIndex)
             }
         }
     )
@@ -205,7 +202,7 @@ fun ImageTilePicker() {
         modifier = Modifier.overrideParentHorizontalPadding(16),
         flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
     ) {
-        itemsIndexed(imageUris) { index, uri ->
+        itemsIndexed(imagePlaceholders) { index, item ->
             Column {
                 Card(
                     modifier = Modifier
@@ -218,12 +215,12 @@ fun ImageTilePicker() {
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Image(
-                        painter = if (uri === null) imagePlaceholders[index].painter else rememberAsyncImagePainter(
-                            uri
+                        painter = if (imageUris[index] === null) item.painter else rememberAsyncImagePainter(
+                            imageUris[index]
                         ),
                         contentDescription = imagePlaceholders[index].contentDescription,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = if (uri === null) ContentScale.FillBounds else ContentScale.FillBounds,
+                        contentScale = if (imageUris[index] === null) ContentScale.FillBounds else ContentScale.FillBounds
                     )
                 }
                 Text(
@@ -315,13 +312,15 @@ fun VINDecodeHeader() {
 @Composable
 fun VINDecodePreview() {
     VINDecode(
+        yearList = emptyList(),
+        makeList = emptyList(),
+        modelsResponse = VehicleModelsResponse(),
+        imageUris = mutableStateListOf<Uri?>(null, null, null, null),
         onVinChanged = {},
         onGenerateRTL = {},
         onMakeSelected = {},
         onYearSelected = {},
         onModelSelected = {},
-        yearList = emptyList(),
-        makeList = emptyList(),
-        modelsResponse = VehicleModelsResponse()
+        onImageUrisChanged = { _, _ -> }
     )
 }

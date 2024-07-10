@@ -53,6 +53,7 @@ fun VINDecodeScreen(
                 yearList = state.yearsList,
                 makeList = state.makesList,
                 modelsResponse = state.modelsResponse,
+                imageUris = state.imageUris,
                 onVinChanged = { vin -> onEventSent(VehicleDetailsContract.Event.OnVINChanged(vin)) },
                 onModelSelected = { model ->
                     onEventSent(
@@ -79,6 +80,14 @@ fun VINDecodeScreen(
                     onEventSent(
                         VehicleDetailsContract.Event.OnGenerateRTLClicked(
                             state.vinNumber
+                        )
+                    )
+                },
+                onImageUrisChanged = { imageUri, index ->
+                    onEventSent(
+                        VehicleDetailsContract.Event.OnImageUrisChanged(
+                            imageUri,
+                            index
                         )
                     )
                 }
