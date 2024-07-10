@@ -36,11 +36,7 @@ fun VINDecodeScreen(
                     )
                 }
 
-                is VehicleDetailsContract.Effect.Navigation.ToVINDecodeResults -> onNavigationRequested(
-                    effect
-                )
-
-                is VehicleDetailsContract.Effect.Navigation.ToBarcodeScan -> onNavigationRequested(
+                is VehicleDetailsContract.Effect.Navigation.ToRTLResults -> onNavigationRequested(
                     effect
                 )
             }
@@ -54,23 +50,37 @@ fun VINDecodeScreen(
         when {
             state.isError -> NetworkError { onEventSent(VehicleDetailsContract.Event.Retry) }
             else -> VINDecode(
+                yearList = state.yearsList,
+                makeList = state.makesList,
+                modelsResponse = state.modelsResponse,
                 onVinChanged = { vin -> onEventSent(VehicleDetailsContract.Event.OnVINChanged(vin)) },
-                onClaimNoChanged = { claimNo ->
+                onModelSelected = { model ->
                     onEventSent(
-                        VehicleDetailsContract.Event.OnClaimNoChanged(
-                            claimNo
+                        VehicleDetailsContract.Event.OnModelSelected(
+                            model
                         )
                     )
                 },
-                onDecodeClicked = {
+                onMakeSelected = { make ->
                     onEventSent(
-                        VehicleDetailsContract.Event.OnDecodeClicked(
+                        VehicleDetailsContract.Event.OnMakeSelected(
+                            make
+                        )
+                    )
+                },
+                onYearSelected = { year ->
+                    onEventSent(
+                        VehicleDetailsContract.Event.OnYearSelected(
+                            year
+                        )
+                    )
+                },
+                onGenerateRTL = {
+                    onEventSent(
+                        VehicleDetailsContract.Event.OnGenerateRTLClicked(
                             state.vinNumber
                         )
                     )
-                },
-                onBarcodeScanClicked = {
-                    onEventSent(VehicleDetailsContract.Event.OnBarcodeScanClicked)
                 }
             )
         }

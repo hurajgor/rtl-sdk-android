@@ -16,12 +16,8 @@ fun VINDecodeScreenDestination(navController: NavController) {
         onEventSent = { event -> viewModel.setEvent(event) },
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
-                is VehicleDetailsContract.Effect.Navigation.ToVINDecodeResults -> {
+                is VehicleDetailsContract.Effect.Navigation.ToRTLResults -> {
                     // TODO: Navigate to results screen
-                }
-
-                is VehicleDetailsContract.Effect.Navigation.ToBarcodeScan -> {
-                    // TODO: Navigate to barcode scan screen
                 }
             }
         }
