@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.copart.rtlaisdk.R
 import com.copart.rtlaisdk.data.model.ImagePlaceholder
+import com.copart.rtlaisdk.data.model.SellersListItem
 import com.copart.rtlaisdk.data.model.VehicleMakesResponseBody
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
 import com.copart.rtlaisdk.data.model.VehicleYearsResponseBody
@@ -74,13 +75,15 @@ fun VINDecode(
     yearList: List<VehicleYearsResponseBody>,
     makeList: List<VehicleMakesResponseBody>,
     modelsResponse: VehicleModelsResponse,
+    sellersList: List<SellersListItem>,
     imageUris: List<Uri?>,
     onVinChanged: (String) -> Unit,
     onYearSelected: (String, String) -> Unit,
     onMakeSelected: (String, String) -> Unit,
     onModelSelected: (String, String) -> Unit,
     onGenerateRTL: () -> Unit,
-    onImageUrisChanged: (Uri?, Int) -> Unit
+    onImageUrisChanged: (Uri?, Int) -> Unit,
+    onSellerSelected: (String, String) -> Unit
 ) {
 
     val scrollState = rememberScrollState()
@@ -128,6 +131,20 @@ fun VINDecode(
                 onValueSelected = onModelSelected
             )
         }
+        CustomDropDown(
+            options = sellersList.map {
+                Pair(
+                    it.id,
+                    "${it.id} - ${it.label} (${it.sc}, ${it.ss})"
+                )
+            },
+            fieldName = "Seller",
+            showHeader = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            onValueSelected = onSellerSelected
+        )
         DecodeButton(onGenerateRTL)
     }
 }
@@ -315,6 +332,7 @@ fun VINDecodePreview() {
         yearList = emptyList(),
         makeList = emptyList(),
         modelsResponse = VehicleModelsResponse(),
+        sellersList = emptyList(),
         imageUris = remember {
             mutableStateListOf<Uri?>(null, null, null, null)
         },
@@ -323,6 +341,7 @@ fun VINDecodePreview() {
         onMakeSelected = { _, _ -> },
         onYearSelected = { _, _ -> },
         onModelSelected = { _, _ -> },
-        onImageUrisChanged = { _, _ -> }
+        onImageUrisChanged = { _, _ -> },
+        onSellerSelected = { _, _ -> }
     )
 }

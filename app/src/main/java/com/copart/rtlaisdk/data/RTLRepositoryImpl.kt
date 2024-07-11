@@ -1,6 +1,7 @@
 package com.copart.rtlaisdk.data
 
 import com.copart.rtlaisdk.data.model.RTLListResponse
+import com.copart.rtlaisdk.data.model.SellersListResponse
 import com.copart.rtlaisdk.data.model.VINDecodeResponse
 import com.copart.rtlaisdk.data.model.VehicleMakesResponse
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
@@ -35,6 +36,11 @@ class RTLRepositoryImpl(
     override suspend fun decodeVin(vin: String): Result<VINDecodeResponse> =
         makeApiCall(dispatcher) {
             rtlApi.decodeVin(vin)
+        }
+
+    override suspend fun getSellersList(): Result<SellersListResponse> =
+        makeApiCall(dispatcher) {
+            rtlApi.getSellersList()
         }
 }
 

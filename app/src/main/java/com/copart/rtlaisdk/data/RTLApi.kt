@@ -1,6 +1,7 @@
 package com.copart.rtlaisdk.data
 
 import com.copart.rtlaisdk.data.model.RTLListResponse
+import com.copart.rtlaisdk.data.model.SellersListResponse
 import com.copart.rtlaisdk.data.model.VINDecodeResponse
 import com.copart.rtlaisdk.data.model.VehicleMakesResponse
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
@@ -24,4 +25,7 @@ interface RTLApi {
 
     @GET(Endpoints.VIN_DECODE)
     suspend fun decodeVin(@Path("vin") vin: String): VINDecodeResponse
+
+    @GET(Endpoints.SELLERS_LIST)
+    suspend fun getSellersList(): SellersListResponse
 }

@@ -12,4 +12,6 @@ object Endpoints {
     const val GET_VEHICLE_MODELS = "adjuster/scs/data/v2/models/{vehicleMake}"
 
     const val VIN_DECODE = "adjuster/data/v1/vin-decode/{vin}"
+
+    const val SELLERS_LIST = "adjuster/scs/v1/sellers"
 }

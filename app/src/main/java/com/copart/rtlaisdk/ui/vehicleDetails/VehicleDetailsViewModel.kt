@@ -19,6 +19,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     private fun getVehicleYearsAndMakes() {
         getVehicleYears()
         getVehicleMakes()
+        getSellersList()
     }
 
     private fun getVehicleMakes() {
@@ -50,6 +51,26 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
                     setState {
                         copy(
                             yearsList = response.body,
+                            isLoading = false
+                        )
+                    }
+                    setEffect { VehicleDetailsContract.Effect.DataWasLoaded }
+                }
+                .onFailure {
+                    setState { copy(isError = true, isLoading = false) }
+                }
+        }
+    }
+
+    private fun getSellersList() {
+        viewModelScope.launch {
+            setState { copy(isLoading = true, isError = false) }
+
+            rtlRepository.getSellersList()
+                .onSuccess { response ->
+                    setState {
+                        copy(
+                            sellersList = response.body?.sellersList ?: emptyList(),
                             isLoading = false
                         )
                     }
