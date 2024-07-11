@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.io.File
 
 class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     BaseViewModel<VehicleDetailsContract.Event, VehicleDetailsContract.State, VehicleDetailsContract.Effect>() {
@@ -147,7 +146,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         }
         return MultipartBody.Part.createFormData(
             partName,
-            fileUri?.path?.let { File(it).name }, requestFile!!
+            "${partName}.jpg", requestFile!!
         )
     }
 

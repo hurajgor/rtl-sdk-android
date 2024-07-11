@@ -1,8 +1,13 @@
 package com.copart.rtlaisdk.ui.vehicleDetails.composables
 
 import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VIDEO
+import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -216,9 +221,10 @@ fun ImageTilePicker(
     val imagePlaceholders = initializeImagePlaceholders()
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            if (isGranted) {
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { permissions ->
+            val allPermissionsGranted = permissions.entries.all { it.value }
+            if (allPermissionsGranted) {
                 showDialog = true
             } else {
                 // Handle permission denied
@@ -261,7 +267,21 @@ fun ImageTilePicker(
                         .size(200.dp)
                         .clickable {
                             currentTileIndex = index // Set the current tile index
-                            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                            val permissions = arrayListOf(Manifest.permission.CAMERA)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                                permissions.addAll(
+                                    arrayOf(
+                                        READ_MEDIA_IMAGES,
+                                        READ_MEDIA_VIDEO,
+                                        READ_MEDIA_VISUAL_USER_SELECTED
+                                    )
+                                )
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                permissions.addAll(arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO))
+                            } else {
+                                permissions.addAll(arrayOf(READ_EXTERNAL_STORAGE))
+                            }
+                            cameraPermissionLauncher.launch(permissions.toTypedArray())
                         },
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
