@@ -1,6 +1,7 @@
 package com.copart.rtlaisdk.ui.vehicleDetails
 
 import android.net.Uri
+import com.copart.rtlaisdk.data.model.SellersListItem
 import com.copart.rtlaisdk.data.model.VehicleMakesResponseBody
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
 import com.copart.rtlaisdk.data.model.VehicleYearsResponseBody
@@ -14,10 +15,11 @@ class VehicleDetailsContract {
         data object Retry : Event()
         data class OnVINChanged(val vin: String) : Event()
         data class OnGenerateRTLClicked(val vin: String) : Event()
-        data class OnYearSelected(val year: String) : Event()
-        data class OnMakeSelected(val make: String) : Event()
-        data class OnModelSelected(val model: String) : Event()
+        data class OnYearSelected(val key: String, val value: String) : Event()
+        data class OnMakeSelected(val key: String, val value: String) : Event()
+        data class OnModelSelected(val key: String, val value: String) : Event()
         data class OnImageUrisChanged(val imageUri: Uri?, val index: Int) : Event()
+        data class OnSellerSelected(val key: String, val value: String) : Event()
     }
 
     data class State(
@@ -29,6 +31,8 @@ class VehicleDetailsContract {
         val makesList: List<VehicleMakesResponseBody>,
         val modelsResponse: VehicleModelsResponse,
         val imageUris: List<Uri?>,
+        val sellersList: List<SellersListItem>,
+        val selectedSeller: SellersListItem?,
         val isLoading: Boolean,
         val isError: Boolean,
     ) : ViewState

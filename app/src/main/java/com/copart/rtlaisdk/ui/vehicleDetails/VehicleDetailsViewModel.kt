@@ -90,6 +90,8 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         makesList = emptyList(),
         modelsResponse = VehicleModelsResponse(),
         imageUris = mutableStateListOf<Uri?>(null, null, null, null),
+        sellersList = arrayListOf(),
+        selectedSeller = null,
         isLoading = false,
         isError = false,
     )
@@ -102,21 +104,25 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             is VehicleDetailsContract.Event.OnMakeSelected -> {
                 setState {
                     copy(
-                        make = event.make,
+                        make = event.value,
                         model = "",
                         modelsResponse = VehicleModelsResponse()
                     )
                 }
-                val makeCode = viewState.value.makesList.find { it.desc == event.make }?.code ?: ""
-                getVehicleModel(makeCode)
+                getVehicleModel(event.key)
             }
 
-            is VehicleDetailsContract.Event.OnModelSelected -> setState { copy(model = event.model) }
-            is VehicleDetailsContract.Event.OnYearSelected -> setState { copy(year = event.year) }
+            is VehicleDetailsContract.Event.OnModelSelected -> setState { copy(model = event.value) }
+            is VehicleDetailsContract.Event.OnYearSelected -> setState { copy(year = event.value) }
             is VehicleDetailsContract.Event.OnImageUrisChanged -> {
                 val imageUris = viewState.value.imageUris.toMutableList()
                 imageUris[event.index] = event.imageUri
                 setState { copy(imageUris = imageUris) }
+            }
+
+            is VehicleDetailsContract.Event.OnSellerSelected -> {
+                val selectedSeller = viewState.value.sellersList.find { it.id == event.key }
+                setState { copy(selectedSeller = selectedSeller) }
             }
         }
     }

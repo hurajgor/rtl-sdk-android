@@ -76,9 +76,9 @@ fun VINDecode(
     modelsResponse: VehicleModelsResponse,
     imageUris: List<Uri?>,
     onVinChanged: (String) -> Unit,
-    onYearSelected: (String) -> Unit,
-    onMakeSelected: (String) -> Unit,
-    onModelSelected: (String) -> Unit,
+    onYearSelected: (String, String) -> Unit,
+    onMakeSelected: (String, String) -> Unit,
+    onModelSelected: (String, String) -> Unit,
     onGenerateRTL: () -> Unit,
     onImageUrisChanged: (Uri?, Int) -> Unit
 ) {
@@ -102,7 +102,7 @@ fun VINDecode(
         CustomDropDown(
             fieldName = "Year",
             showHeader = true,
-            options = yearList.map { it.code.toString() },
+            options = yearList.map { Pair(it.code.toString(), it.code.toString()) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
@@ -111,13 +111,13 @@ fun VINDecode(
         CustomDropDown(
             fieldName = "Make",
             showHeader = true,
-            options = makeList.map { it.desc.toString() },
+            options = makeList.map { Pair(it.code.toString(), it.desc.toString()) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             onValueSelected = onMakeSelected
         )
-        modelsResponse.body?.list?.map { it.desc.toString() }?.let {
+        modelsResponse.body?.list?.map { Pair(it.desc.toString(), it.desc.toString()) }?.let {
             CustomDropDown(
                 fieldName = "Model",
                 showHeader = true,
@@ -320,9 +320,9 @@ fun VINDecodePreview() {
         },
         onVinChanged = {},
         onGenerateRTL = {},
-        onMakeSelected = {},
-        onYearSelected = {},
-        onModelSelected = {},
+        onMakeSelected = { _, _ -> },
+        onYearSelected = { _, _ -> },
+        onModelSelected = { _, _ -> },
         onImageUrisChanged = { _, _ -> }
     )
 }

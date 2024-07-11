@@ -55,24 +55,24 @@ fun VINDecodeScreen(
                 modelsResponse = state.modelsResponse,
                 imageUris = state.imageUris,
                 onVinChanged = { vin -> onEventSent(VehicleDetailsContract.Event.OnVINChanged(vin)) },
-                onModelSelected = { model ->
+                onModelSelected = { key, value ->
                     onEventSent(
                         VehicleDetailsContract.Event.OnModelSelected(
-                            model
+                            key, value
                         )
                     )
                 },
-                onMakeSelected = { make ->
+                onMakeSelected = { key, value ->
                     onEventSent(
                         VehicleDetailsContract.Event.OnMakeSelected(
-                            make
+                            key, value
                         )
                     )
                 },
-                onYearSelected = { year ->
+                onYearSelected = { key, value ->
                     onEventSent(
                         VehicleDetailsContract.Event.OnYearSelected(
-                            year
+                            key, value
                         )
                     )
                 },

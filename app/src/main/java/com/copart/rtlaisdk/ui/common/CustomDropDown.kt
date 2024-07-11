@@ -26,19 +26,21 @@ import com.copart.rtlaisdk.ui.theme.labelBold16
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDropDown(
-    options: List<String>,
+    options: List<Pair<String, String>>,
     modifier: Modifier = Modifier,
     fieldName: String = "",
     showHeader: Boolean = false,
-    onValueSelected: (String) -> Unit
+    onValueSelected: (String, String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isExpandable by remember { mutableStateOf(true) }
-    var selectedOption by remember { mutableStateOf("Select Option") }
+    var selectedOptionKey by remember { mutableStateOf("") }
+    var selectedOptionValue by remember { mutableStateOf("Select Option") }
 
     // Reset selectedOption when options list changes
     LaunchedEffect(options) {
-        selectedOption = "Select Option"
+        selectedOptionValue = "Select Option"
+        selectedOptionKey = ""
         isExpandable = options.isNotEmpty()
     }
 
@@ -61,8 +63,8 @@ fun CustomDropDown(
             }
         ) {
             TextField(
-                value = selectedOption,
-                onValueChange = { onValueSelected(selectedOption) },
+                value = selectedOptionValue,
+                onValueChange = { onValueSelected(selectedOptionKey, selectedOptionValue) },
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 modifier = Modifier
@@ -83,13 +85,14 @@ fun CustomDropDown(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                options.forEach { item ->
+                options.forEach { (key, value) ->
                     DropdownMenuItem(
-                        text = { Text(text = item) },
+                        text = { Text(text = value) },
                         onClick = {
-                            selectedOption = item
+                            selectedOptionKey = key
+                            selectedOptionValue = value
                             expanded = false
-                            onValueSelected(selectedOption)
+                            onValueSelected(selectedOptionKey, selectedOptionValue)
                         }
                     )
                 }
@@ -104,12 +107,12 @@ fun CustomDropDown(
 fun CustomDropDownPreview() {
     Column {
         CustomDropDown(
-            options = listOf("Option 1", "Option 2", "Option 3"),
+            options = listOf(Pair("1", "Option 1"), Pair("2", "Option 2"), Pair("3", "Option 3")),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             fieldName = "Field Name",
             showHeader = true,
-            onValueSelected = {})
+            onValueSelected = { key, value -> })
     }
 }
