@@ -106,7 +106,14 @@ fun VINDecodeScreen(
                             key, value
                         )
                     )
-                }
+                },
+                isAirBagsDeployed = { key, value ->
+                    onEventSent(
+                        VehicleDetailsContract.Event.IsAirBagsDeployed(
+                            key, value
+                        )
+                    )
+                },
             )
         }
     }

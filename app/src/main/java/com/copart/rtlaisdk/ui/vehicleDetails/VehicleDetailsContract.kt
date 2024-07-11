@@ -22,6 +22,7 @@ class VehicleDetailsContract {
         data class OnImageUrisChanged(val imageUri: Uri?, val index: Int) : Event()
         data class OnSellerSelected(val key: String, val value: String) : Event()
         data class OnPrimaryDamageSelected(val key: String, val value: String) : Event()
+        data class IsAirBagsDeployed(val key: String, val value: String) : Event()
     }
 
     data class State(
@@ -37,6 +38,7 @@ class VehicleDetailsContract {
         val selectedSeller: SellersListItem?,
         val primaryDamages: List<PrimaryDamagesItem>,
         val selectedPrimaryDamage: PrimaryDamagesItem?,
+        val isAirBagsDeployed: String,
         val isLoading: Boolean,
         val isError: Boolean,
     ) : ViewState

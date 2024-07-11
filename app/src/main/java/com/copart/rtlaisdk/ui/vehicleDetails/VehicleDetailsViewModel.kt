@@ -136,6 +136,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         selectedSeller = null,
         primaryDamages = emptyList(),
         selectedPrimaryDamage = null,
+        isAirBagsDeployed = "No",
         isLoading = false,
         isError = false,
     )
@@ -173,6 +174,10 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
                 val selectedPrimaryDamage =
                     viewState.value.primaryDamages.find { it.code == event.key }
                 setState { copy(selectedPrimaryDamage = selectedPrimaryDamage) }
+            }
+
+            is VehicleDetailsContract.Event.IsAirBagsDeployed -> {
+                setState { copy(isAirBagsDeployed = event.value) }
             }
         }
     }

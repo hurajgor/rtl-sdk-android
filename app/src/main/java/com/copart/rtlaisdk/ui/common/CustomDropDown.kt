@@ -30,17 +30,19 @@ fun CustomDropDown(
     modifier: Modifier = Modifier,
     fieldName: String = "",
     showHeader: Boolean = false,
-    onValueSelected: (String, String) -> Unit
+    onValueSelected: (String, String) -> Unit,
+    selectedValue: String = "Select Option",
+    selectedKey: String = ""
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isExpandable by remember { mutableStateOf(true) }
-    var selectedOptionKey by remember { mutableStateOf("") }
-    var selectedOptionValue by remember { mutableStateOf("Select Option") }
+    var selectedOptionKey by remember { mutableStateOf(selectedKey) }
+    var selectedOptionValue by remember { mutableStateOf(selectedValue) }
 
     // Reset selectedOption when options list changes
     LaunchedEffect(options) {
-        selectedOptionValue = "Select Option"
-        selectedOptionKey = ""
+        selectedOptionValue = selectedValue
+        selectedOptionKey = selectedKey
         isExpandable = options.isNotEmpty()
     }
 

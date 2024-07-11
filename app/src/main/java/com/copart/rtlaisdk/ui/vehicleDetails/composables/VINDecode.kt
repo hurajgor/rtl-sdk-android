@@ -86,7 +86,8 @@ fun VINDecode(
     onGenerateRTL: () -> Unit,
     onImageUrisChanged: (Uri?, Int) -> Unit,
     onSellerSelected: (String, String) -> Unit,
-    onPrimaryDamageSelected: (String, String) -> Unit
+    onPrimaryDamageSelected: (String, String) -> Unit,
+    isAirBagsDeployed: (String, String) -> Unit
 ) {
 
     val scrollState = rememberScrollState()
@@ -161,6 +162,17 @@ fun VINDecode(
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             onValueSelected = onPrimaryDamageSelected
+        )
+        CustomDropDown(
+            options = listOf(Pair("Yes", "Yes"), Pair("No", " No")),
+            fieldName = "Airbags Deployed?",
+            showHeader = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            onValueSelected = isAirBagsDeployed,
+            selectedValue = "No",
+            selectedKey = "No"
         )
         DecodeButton(onGenerateRTL)
     }
@@ -361,6 +373,7 @@ fun VINDecodePreview() {
         onModelSelected = { _, _ -> },
         onImageUrisChanged = { _, _ -> },
         onSellerSelected = { _, _ -> },
-        onPrimaryDamageSelected = { _, _ -> }
+        onPrimaryDamageSelected = { _, _ -> },
+        isAirBagsDeployed = { _, _ -> }
     )
 }
