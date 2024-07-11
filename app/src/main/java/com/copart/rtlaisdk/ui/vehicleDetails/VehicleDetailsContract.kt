@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.ui.vehicleDetails
 
+import android.content.Context
 import android.net.Uri
 import com.copart.rtlaisdk.data.model.PrimaryDamagesItem
 import com.copart.rtlaisdk.data.model.SellersListItem
@@ -15,7 +16,7 @@ class VehicleDetailsContract {
     sealed class Event : ViewEvent {
         data object Retry : Event()
         data class OnVINChanged(val vin: String) : Event()
-        data class OnGenerateRTLClicked(val vin: String) : Event()
+        data class OnGenerateRTLClicked(val context: Context) : Event()
         data class OnYearSelected(val key: String, val value: String) : Event()
         data class OnMakeSelected(val key: String, val value: String) : Event()
         data class OnModelSelected(val key: String, val value: String) : Event()

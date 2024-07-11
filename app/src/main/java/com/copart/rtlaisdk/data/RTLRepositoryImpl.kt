@@ -3,6 +3,7 @@ package com.copart.rtlaisdk.data
 import com.copart.rtlaisdk.data.model.PrimaryDamagesResponse
 import com.copart.rtlaisdk.data.model.RTLListResponse
 import com.copart.rtlaisdk.data.model.SellersListResponse
+import com.copart.rtlaisdk.data.model.UploadRTLResponse
 import com.copart.rtlaisdk.data.model.VINDecodeResponse
 import com.copart.rtlaisdk.data.model.VehicleMakesResponse
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
@@ -10,6 +11,8 @@ import com.copart.rtlaisdk.data.model.VehicleYearsResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 class RTLRepositoryImpl(
     private val rtlApi: RTLApi,
@@ -47,6 +50,17 @@ class RTLRepositoryImpl(
     override suspend fun getPrimaryDamages(): Result<PrimaryDamagesResponse> =
         makeApiCall(dispatcher) {
             rtlApi.getPrimaryDamages()
+        }
+
+    override suspend fun uploadRTL(
+        metadata: RequestBody,
+        imageFP: MultipartBody.Part,
+        imageFD: MultipartBody.Part,
+        imageRD: MultipartBody.Part,
+        imageRP: MultipartBody.Part
+    ): Result<UploadRTLResponse> =
+        makeApiCall(dispatcher) {
+            rtlApi.uploadRTL(metadata, imageFP, imageFD, imageRD, imageRP)
         }
 }
 

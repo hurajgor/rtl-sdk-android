@@ -78,10 +78,10 @@ fun VINDecodeScreen(
                         )
                     )
                 },
-                onGenerateRTL = {
+                onGenerateRTL = { context ->
                     onEventSent(
                         VehicleDetailsContract.Event.OnGenerateRTLClicked(
-                            state.vinNumber
+                            context
                         )
                     )
                 },

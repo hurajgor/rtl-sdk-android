@@ -1,6 +1,7 @@
 package com.copart.rtlaisdk.ui.vehicleDetails.composables
 
 import android.Manifest
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -83,7 +84,7 @@ fun VINDecode(
     onYearSelected: (String, String) -> Unit,
     onMakeSelected: (String, String) -> Unit,
     onModelSelected: (String, String) -> Unit,
-    onGenerateRTL: () -> Unit,
+    onGenerateRTL: (Context) -> Unit,
     onImageUrisChanged: (Uri?, Int) -> Unit,
     onSellerSelected: (String, String) -> Unit,
     onPrimaryDamageSelected: (String, String) -> Unit,
@@ -91,6 +92,7 @@ fun VINDecode(
 ) {
 
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -100,7 +102,7 @@ fun VINDecode(
             .padding(16.dp),
     ) {
         VINDecodeHeader()
-        ImageTilePicker(imageUris, onImageUrisChanged)
+        ImageTilePicker(imageUris, onImageUrisChanged, context)
         CustomTextField(
             stringResource(id = R.string.vin),
             stringResource(R.string.vin_placeholder),
@@ -174,7 +176,7 @@ fun VINDecode(
             selectedValue = "No",
             selectedKey = "No"
         )
-        DecodeButton(onGenerateRTL)
+        DecodeButton(onGenerateRTL, context)
     }
 }
 
@@ -203,8 +205,11 @@ fun initializeImagePlaceholders(): List<ImagePlaceholder> {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ImageTilePicker(imageUris: List<Uri?>, onImageUrisChanged: (Uri?, Int) -> Unit) {
-    val context = LocalContext.current
+fun ImageTilePicker(
+    imageUris: List<Uri?>,
+    onImageUrisChanged: (Uri?, Int) -> Unit,
+    context: Context
+) {
     var showDialog by remember { mutableStateOf(false) }
     var currentTileIndex by remember { mutableStateOf(-1) } // Track the current tile index
     var tempPhotoUri by remember { mutableStateOf(value = Uri.EMPTY) }
@@ -311,7 +316,7 @@ fun ImageTilePicker(imageUris: List<Uri?>, onImageUrisChanged: (Uri?, Int) -> Un
 }
 
 @Composable
-fun DecodeButton(onGenerateRTL: () -> Unit) {
+fun DecodeButton(onGenerateRTL: (Context) -> Unit, context: Context) {
     var isValid = true // Replace with your validation logic
     Column(
         modifier = Modifier
@@ -320,7 +325,7 @@ fun DecodeButton(onGenerateRTL: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { onGenerateRTL() },
+            onClick = { onGenerateRTL(context) },
             shape = ButtonDefaults.shape, // This uses the default rounded shape
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (isValid) CopartBlue else GreyChateau,

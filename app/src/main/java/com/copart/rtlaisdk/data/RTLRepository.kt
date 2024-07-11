@@ -3,10 +3,13 @@ package com.copart.rtlaisdk.data
 import com.copart.rtlaisdk.data.model.PrimaryDamagesResponse
 import com.copart.rtlaisdk.data.model.RTLListResponse
 import com.copart.rtlaisdk.data.model.SellersListResponse
+import com.copart.rtlaisdk.data.model.UploadRTLResponse
 import com.copart.rtlaisdk.data.model.VINDecodeResponse
 import com.copart.rtlaisdk.data.model.VehicleMakesResponse
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
 import com.copart.rtlaisdk.data.model.VehicleYearsResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 interface RTLRepository {
     suspend fun getRtlList(): Result<RTLListResponse>
@@ -16,5 +19,12 @@ interface RTLRepository {
     suspend fun decodeVin(vin: String): Result<VINDecodeResponse>
     suspend fun getSellersList(): Result<SellersListResponse>
     suspend fun getPrimaryDamages(): Result<PrimaryDamagesResponse>
+    suspend fun uploadRTL(
+        metadata: RequestBody,
+        imageFP: MultipartBody.Part,
+        imageFD: MultipartBody.Part,
+        imageRD: MultipartBody.Part,
+        imageRP: MultipartBody.Part
+    ): Result<UploadRTLResponse>
 
 }
