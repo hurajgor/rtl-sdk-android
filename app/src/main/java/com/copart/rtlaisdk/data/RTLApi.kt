@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.data
 
+import com.copart.rtlaisdk.data.model.PrimaryDamagesResponse
 import com.copart.rtlaisdk.data.model.RTLListResponse
 import com.copart.rtlaisdk.data.model.SellersListResponse
 import com.copart.rtlaisdk.data.model.VINDecodeResponse
@@ -28,4 +29,7 @@ interface RTLApi {
 
     @GET(Endpoints.SELLERS_LIST)
     suspend fun getSellersList(): SellersListResponse
+
+    @GET(Endpoints.PRIMARY_DAMAGES_LIST)
+    suspend fun getPrimaryDamages(): PrimaryDamagesResponse
 }

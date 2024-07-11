@@ -20,6 +20,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         getVehicleYears()
         getVehicleMakes()
         getSellersList()
+        getPrimaryDamages()
     }
 
     private fun getVehicleMakes() {
@@ -102,6 +103,26 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         }
     }
 
+    private fun getPrimaryDamages() {
+        viewModelScope.launch {
+            setState { copy(isLoading = true, isError = false) }
+
+            rtlRepository.getPrimaryDamages()
+                .onSuccess { response ->
+                    setState {
+                        copy(
+                            primaryDamages = response.body,
+                            isLoading = false
+                        )
+                    }
+                    setEffect { VehicleDetailsContract.Effect.DataWasLoaded }
+                }
+                .onFailure {
+                    setState { copy(isError = true, isLoading = false) }
+                }
+        }
+    }
+
     override fun setInitialState() = VehicleDetailsContract.State(
         vinNumber = "",
         year = "",
@@ -113,6 +134,8 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         imageUris = mutableStateListOf<Uri?>(null, null, null, null),
         sellersList = arrayListOf(),
         selectedSeller = null,
+        primaryDamages = emptyList(),
+        selectedPrimaryDamage = null,
         isLoading = false,
         isError = false,
     )
@@ -144,6 +167,12 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             is VehicleDetailsContract.Event.OnSellerSelected -> {
                 val selectedSeller = viewState.value.sellersList.find { it.id == event.key }
                 setState { copy(selectedSeller = selectedSeller) }
+            }
+
+            is VehicleDetailsContract.Event.OnPrimaryDamageSelected -> {
+                val selectedPrimaryDamage =
+                    viewState.value.primaryDamages.find { it.code == event.key }
+                setState { copy(selectedPrimaryDamage = selectedPrimaryDamage) }
             }
         }
     }

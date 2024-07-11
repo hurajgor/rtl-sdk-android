@@ -1,6 +1,7 @@
 package com.copart.rtlaisdk.ui.vehicleDetails
 
 import android.net.Uri
+import com.copart.rtlaisdk.data.model.PrimaryDamagesItem
 import com.copart.rtlaisdk.data.model.SellersListItem
 import com.copart.rtlaisdk.data.model.VehicleMakesResponseBody
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
@@ -20,6 +21,7 @@ class VehicleDetailsContract {
         data class OnModelSelected(val key: String, val value: String) : Event()
         data class OnImageUrisChanged(val imageUri: Uri?, val index: Int) : Event()
         data class OnSellerSelected(val key: String, val value: String) : Event()
+        data class OnPrimaryDamageSelected(val key: String, val value: String) : Event()
     }
 
     data class State(
@@ -33,6 +35,8 @@ class VehicleDetailsContract {
         val imageUris: List<Uri?>,
         val sellersList: List<SellersListItem>,
         val selectedSeller: SellersListItem?,
+        val primaryDamages: List<PrimaryDamagesItem>,
+        val selectedPrimaryDamage: PrimaryDamagesItem?,
         val isLoading: Boolean,
         val isError: Boolean,
     ) : ViewState

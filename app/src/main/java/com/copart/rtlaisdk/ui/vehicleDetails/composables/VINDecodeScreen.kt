@@ -53,6 +53,7 @@ fun VINDecodeScreen(
                 yearList = state.yearsList,
                 makeList = state.makesList,
                 sellersList = state.sellersList,
+                primaryDamages = state.primaryDamages,
                 modelsResponse = state.modelsResponse,
                 imageUris = state.imageUris,
                 onVinChanged = { vin -> onEventSent(VehicleDetailsContract.Event.OnVINChanged(vin)) },
@@ -95,6 +96,13 @@ fun VINDecodeScreen(
                 onSellerSelected = { key, value ->
                     onEventSent(
                         VehicleDetailsContract.Event.OnSellerSelected(
+                            key, value
+                        )
+                    )
+                },
+                onPrimaryDamageSelected = { key, value ->
+                    onEventSent(
+                        VehicleDetailsContract.Event.OnPrimaryDamageSelected(
                             key, value
                         )
                     )

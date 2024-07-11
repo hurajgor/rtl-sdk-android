@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.data
 
+import com.copart.rtlaisdk.data.model.PrimaryDamagesResponse
 import com.copart.rtlaisdk.data.model.RTLListResponse
 import com.copart.rtlaisdk.data.model.SellersListResponse
 import com.copart.rtlaisdk.data.model.VINDecodeResponse
@@ -41,6 +42,11 @@ class RTLRepositoryImpl(
     override suspend fun getSellersList(): Result<SellersListResponse> =
         makeApiCall(dispatcher) {
             rtlApi.getSellersList()
+        }
+
+    override suspend fun getPrimaryDamages(): Result<PrimaryDamagesResponse> =
+        makeApiCall(dispatcher) {
+            rtlApi.getPrimaryDamages()
         }
 }
 

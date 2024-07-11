@@ -14,4 +14,6 @@ object Endpoints {
     const val VIN_DECODE = "adjuster/data/v1/vin-decode/{vin}"
 
     const val SELLERS_LIST = "adjuster/scs/v1/sellers"
+
+    const val PRIMARY_DAMAGES_LIST = "adjuster/data/v1/primary-damages"
 }

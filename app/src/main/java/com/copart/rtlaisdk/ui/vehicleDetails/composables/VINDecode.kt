@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.copart.rtlaisdk.R
 import com.copart.rtlaisdk.data.model.ImagePlaceholder
+import com.copart.rtlaisdk.data.model.PrimaryDamagesItem
 import com.copart.rtlaisdk.data.model.SellersListItem
 import com.copart.rtlaisdk.data.model.VehicleMakesResponseBody
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
@@ -76,6 +77,7 @@ fun VINDecode(
     makeList: List<VehicleMakesResponseBody>,
     modelsResponse: VehicleModelsResponse,
     sellersList: List<SellersListItem>,
+    primaryDamages: List<PrimaryDamagesItem>,
     imageUris: List<Uri?>,
     onVinChanged: (String) -> Unit,
     onYearSelected: (String, String) -> Unit,
@@ -83,7 +85,8 @@ fun VINDecode(
     onModelSelected: (String, String) -> Unit,
     onGenerateRTL: () -> Unit,
     onImageUrisChanged: (Uri?, Int) -> Unit,
-    onSellerSelected: (String, String) -> Unit
+    onSellerSelected: (String, String) -> Unit,
+    onPrimaryDamageSelected: (String, String) -> Unit
 ) {
 
     val scrollState = rememberScrollState()
@@ -144,6 +147,20 @@ fun VINDecode(
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             onValueSelected = onSellerSelected
+        )
+        CustomDropDown(
+            options = primaryDamages.map {
+                Pair(
+                    it.code,
+                    it.desc
+                )
+            },
+            fieldName = "Primary Damages",
+            showHeader = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            onValueSelected = onPrimaryDamageSelected
         )
         DecodeButton(onGenerateRTL)
     }
@@ -336,12 +353,14 @@ fun VINDecodePreview() {
         imageUris = remember {
             mutableStateListOf<Uri?>(null, null, null, null)
         },
+        primaryDamages = emptyList(),
         onVinChanged = {},
         onGenerateRTL = {},
         onMakeSelected = { _, _ -> },
         onYearSelected = { _, _ -> },
         onModelSelected = { _, _ -> },
         onImageUrisChanged = { _, _ -> },
-        onSellerSelected = { _, _ -> }
+        onSellerSelected = { _, _ -> },
+        onPrimaryDamageSelected = { _, _ -> }
     )
 }
