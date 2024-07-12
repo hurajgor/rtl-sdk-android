@@ -11,7 +11,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.core.content.FileProvider
-import com.copart.rtlaisdk.BuildConfig
 import java.io.File
 
 fun buildAnnotatedStringWithBoldDynamicValue(
@@ -41,7 +40,7 @@ fun getWindowWidth(): Int {
 }
 
 fun Context.createTempPictureUri(
-    provider: String = "${BuildConfig.APPLICATION_ID}.fileprovider",
+    provider: String = "com.copart.rtlaisdk.fileprovider",
     fileName: String = "picture_${System.currentTimeMillis()}",
     fileExtension: String = ".png"
 ): Uri {
