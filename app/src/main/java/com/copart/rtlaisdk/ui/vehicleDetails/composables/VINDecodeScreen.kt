@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import com.copart.rtlaisdk.R
 import com.copart.rtlaisdk.ui.base.SIDE_EFFECTS_KEY
 import com.copart.rtlaisdk.ui.common.NetworkError
+import com.copart.rtlaisdk.ui.common.Progress
 import com.copart.rtlaisdk.ui.vehicleDetails.VehicleDetailsContract
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -21,7 +22,8 @@ fun VINDecodeScreen(
     state: VehicleDetailsContract.State,
     effectFlow: Flow<VehicleDetailsContract.Effect>?,
     onEventSent: (event: VehicleDetailsContract.Event) -> Unit,
-    onNavigationRequested: (navigationEffect: VehicleDetailsContract.Effect.Navigation) -> Unit
+    onNavigationRequested: (navigationEffect: VehicleDetailsContract.Effect.Navigation) -> Unit,
+    onUploadSuccessful: (requestId: String, isSuccess: Boolean) -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val snackBarMessage = stringResource(R.string.data_is_loaded)
@@ -39,6 +41,10 @@ fun VINDecodeScreen(
                 is VehicleDetailsContract.Effect.Navigation.ToRTLResults -> onNavigationRequested(
                     effect
                 )
+
+                is VehicleDetailsContract.Effect.UploadSuccessful -> {
+                    onUploadSuccessful(effect.requestId, effect.isSuccess)
+                }
             }
         }?.collect()
     }
@@ -49,6 +55,7 @@ fun VINDecodeScreen(
         it
         when {
             state.isError -> NetworkError { onEventSent(VehicleDetailsContract.Event.Retry) }
+            state.isLoading -> Progress()
             else -> VINDecode(
                 yearList = state.yearsList,
                 makeList = state.makesList,

@@ -8,7 +8,10 @@ import com.copart.rtlaisdk.ui.vehicleDetails.composables.VINDecodeScreen
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun VINDecodeScreenDestination(navController: NavController) {
+fun VINDecodeScreenDestination(
+    navController: NavController,
+    onUploadSuccessful: (String, Boolean) -> Unit,
+) {
     val viewModel = getViewModel<VehicleDetailsViewModel>()
     VINDecodeScreen(
         state = viewModel.viewState.value,
@@ -20,6 +23,9 @@ fun VINDecodeScreenDestination(navController: NavController) {
                     // TODO: Navigate to results screen
                 }
             }
+        },
+        onUploadSuccessful = { requestId, isSuccess ->
+            onUploadSuccessful(requestId, isSuccess)
         }
     )
 }

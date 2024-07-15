@@ -46,6 +46,7 @@ class VehicleDetailsContract {
 
     sealed class Effect : ViewSideEffect {
         data object DataWasLoaded : Effect()
+        data class UploadSuccessful(val requestId: String, val isSuccess: Boolean) : Effect()
 
         sealed class Navigation : Effect() {
             data object ToRTLResults : Navigation()

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.viewModelScope
+import com.copart.rtlaisdk.RTLAIApplication
 import com.copart.rtlaisdk.data.RTLRepository
 import com.copart.rtlaisdk.data.model.RTLUploadMetadata
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
@@ -31,7 +32,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getVehicleMakes() {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getVehicleMakes(VEHICLE_TYPE_CODE_MAPPING.AUTOMOBILES)
                 .onSuccess { response ->
@@ -51,7 +52,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getVehicleYears() {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getVehicleYears()
                 .onSuccess { response ->
@@ -71,7 +72,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getSellersList() {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getSellersList()
                 .onSuccess { response ->
@@ -91,7 +92,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getVehicleModel(make: String) {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getVehicleModels(make)
                 .onSuccess { response ->
@@ -111,7 +112,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getPrimaryDamages() {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getPrimaryDamages()
                 .onSuccess { response ->
@@ -169,11 +170,16 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             )
                 .onSuccess { response ->
                     setState { copy(isLoading = false, isError = false) }
-                    setEffect { VehicleDetailsContract.Effect.DataWasLoaded }
+                    setEffect {
+                        VehicleDetailsContract.Effect.UploadSuccessful(
+                            response.body?.requestId ?: "", true
+                        )
+                    }
                 }
                 .onFailure { error ->
                     println(error)
-                    setState { copy(isError = true, isLoading = false) }
+                    setState { copy(isError = false, isLoading = false) }
+                    setEffect { VehicleDetailsContract.Effect.UploadSuccessful("", false) }
                 }
         }
     }
@@ -201,14 +207,15 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             is VehicleDetailsContract.Event.Retry -> getVehicleYearsAndMakes()
             is VehicleDetailsContract.Event.OnVINChanged -> setState { copy(vinNumber = event.vin) }
             is VehicleDetailsContract.Event.OnGenerateRTLClicked -> {
+                val rtlClientParams = RTLAIApplication.rtlClientParams
                 val metaData = RTLUploadMetadata(
-                    seller_id = "SSM33594",
+                    seller_id = rtlClientParams?.sellerId ?: "",
                     vin_number = viewState.value.vinNumber,
-                    user_id = "SSM33594",
+                    user_id = rtlClientParams?.sellerId ?: "",
                     seller_code = viewState.value.selectedSeller?.id ?: "",
-                    seller_email = "randomxyz123@copart.com",
-                    operating_country_grp_code = "US",
-                    appSource = "SELLER_MOBILE",
+                    seller_email = rtlClientParams?.sellerEmail ?: "",
+                    operating_country_grp_code = rtlClientParams?.operatingCountryGroupCode ?: "",
+                    appSource = rtlClientParams?.appSource ?: "",
                     acv = "1.00",
                     make = viewState.value.make,
                     model = viewState.value.model,
@@ -221,7 +228,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
                     fuel_type = "Gas",
                     lot_cat = "A",
                     group_model = viewState.value.model,
-                    country_code = "USA",
+                    country_code = rtlClientParams?.countryCode ?: "",
                     claim_number = null,
                     re_request = false
                 )

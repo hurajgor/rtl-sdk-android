@@ -7,13 +7,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(onUploadSuccessful: (String, Boolean) -> Unit) {
 
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = Navigation.Routes.RTL_LIST
+        startDestination = Navigation.Routes.VIN_DECODE
     ) {
         composable(
             route = Navigation.Routes.RTL_LIST
@@ -24,7 +24,12 @@ fun AppNavigation() {
         composable(
             route = Navigation.Routes.VIN_DECODE
         ) {
-            VINDecodeScreenDestination(navController)
+            VINDecodeScreenDestination(navController) { requestId, isSuccess ->
+                onUploadSuccessful(
+                    requestId,
+                    isSuccess
+                )
+            }
         }
 
     }

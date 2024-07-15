@@ -31,3 +31,12 @@ data class RTLUploadMetadata(
     val claim_number: String? = null,
     val re_request: Boolean = false
 )
+
+data class RTLClientParams(
+    val sessionCookie: String = "",
+    val sellerId: String = "",
+    val sellerEmail: String = "",
+    val operatingCountryGroupCode: String = "",
+    val appSource: String = "",
+    val countryCode: String = "",
+)
