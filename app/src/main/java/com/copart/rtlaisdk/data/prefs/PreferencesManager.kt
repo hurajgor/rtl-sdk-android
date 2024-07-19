@@ -7,6 +7,7 @@ class PreferencesManager(context: Context) {
 
     companion object {
         const val PREF_NAME = "rtlai_prefs"
+        const val RTL_LIST_SCROLL_POSITION = "rtl_list_scroll_position"
     }
 
     private val sharedPreferences: SharedPreferences =

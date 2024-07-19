@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.data
 
+import com.copart.rtlaisdk.data.model.GetRTLListRequest
 import com.copart.rtlaisdk.data.model.PrimaryDamagesResponse
 import com.copart.rtlaisdk.data.model.RTLListResponse
 import com.copart.rtlaisdk.data.model.SellersListResponse
@@ -19,8 +20,9 @@ class RTLRepositoryImpl(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : RTLRepository {
 
-    override suspend fun getRtlList(): Result<RTLListResponse> = makeApiCall(dispatcher) {
-        rtlApi.getRTLList()
+    override suspend fun getRtlList(request: GetRTLListRequest): Result<RTLListResponse> =
+        makeApiCall(dispatcher) {
+            rtlApi.getRTLList(request)
     }
 
     override suspend fun getVehicleYears(): Result<VehicleYearsResponse> = makeApiCall(dispatcher) {

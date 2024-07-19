@@ -94,13 +94,13 @@ fun RTLListScreen(
             state.isError -> NetworkError { onEventSent(RTLListContract.Event.Retry) }
             else ->
                 Box(modifier = Modifier.nestedScroll(pullRefreshState.nestedScrollConnection)) {
-                    RTLList(rtlList = state.rtlList) {
+                    RTLList(rtlList = state.rtlList, onItemClick = { item ->
                         onEventSent(
                             RTLListContract.Event.RTLListItemSelection(
-                                it
+                                item
                             )
                         )
-                    }
+                    }, onEndReached = { onEventSent(RTLListContract.Event.LoadMoreItems) })
                     PullToRefreshContainer(
                         state = pullRefreshState,
                         modifier = Modifier.align(Alignment.TopCenter)
@@ -119,6 +119,9 @@ fun UsersScreenSuccessPreview() {
             rtlList = users,
             isLoading = false,
             isError = false,
+            start = 0,
+            rows = 20,
+            maxItems = Int.MAX_VALUE
         ),
         effectFlow = null,
         onEventSent = {},
@@ -134,6 +137,9 @@ fun UsersScreenErrorPreview() {
             rtlList = emptyList(),
             isLoading = false,
             isError = true,
+            start = 0,
+            rows = 20,
+            maxItems = Int.MAX_VALUE
         ),
         effectFlow = null,
         onEventSent = {},

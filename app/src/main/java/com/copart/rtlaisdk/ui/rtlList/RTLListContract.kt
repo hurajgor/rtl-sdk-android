@@ -11,12 +11,16 @@ class RTLListContract {
         object Retry : Event()
         data class RTLListItemSelection(val rtlListItem: RTLListItem) : Event()
         object NewRTLRequest : Event()
+        object LoadMoreItems : Event()
     }
 
     data class State(
         val rtlList: List<RTLListItem>,
         val isLoading: Boolean,
         val isError: Boolean,
+        val start: Int,
+        val rows: Int,
+        val maxItems: Int
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

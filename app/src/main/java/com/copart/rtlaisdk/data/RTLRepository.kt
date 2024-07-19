@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.data
 
+import com.copart.rtlaisdk.data.model.GetRTLListRequest
 import com.copart.rtlaisdk.data.model.PrimaryDamagesResponse
 import com.copart.rtlaisdk.data.model.RTLListResponse
 import com.copart.rtlaisdk.data.model.SellersListResponse
@@ -12,7 +13,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface RTLRepository {
-    suspend fun getRtlList(): Result<RTLListResponse>
+    suspend fun getRtlList(request: GetRTLListRequest): Result<RTLListResponse>
     suspend fun getVehicleYears(): Result<VehicleYearsResponse>
     suspend fun getVehicleMakes(vehicleType: String): Result<VehicleMakesResponse>
     suspend fun getVehicleModels(vehicleMake: String): Result<VehicleModelsResponse>
