@@ -19,4 +19,5 @@
     <string name="decode">Decode</string>
     <string name="generate">Generate</string>
     <string name="rtl_list_search_placeholder">Search by vin, seller, year, make, model</string>
+    <string name="no_data_found">No data found!</string>
 </resources>
