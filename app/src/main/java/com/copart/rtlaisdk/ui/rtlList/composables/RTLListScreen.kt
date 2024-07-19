@@ -1,6 +1,7 @@
 package com.copart.rtlaisdk.ui.rtlList.composables
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +28,7 @@ import com.copart.rtlaisdk.data.model.buildRTLListItemPreview
 import com.copart.rtlaisdk.ui.base.SIDE_EFFECTS_KEY
 import com.copart.rtlaisdk.ui.common.NetworkError
 import com.copart.rtlaisdk.ui.common.Progress
+import com.copart.rtlaisdk.ui.common.SearchBarWithButton
 import com.copart.rtlaisdk.ui.rtlList.RTLListContract
 import com.copart.rtlaisdk.ui.rtlList.RTLListContract.Event.NewRTLRequest
 import com.copart.rtlaisdk.ui.theme.CopartBlue
@@ -94,13 +96,21 @@ fun RTLListScreen(
             state.isError -> NetworkError { onEventSent(RTLListContract.Event.Retry) }
             else ->
                 Box(modifier = Modifier.nestedScroll(pullRefreshState.nestedScrollConnection)) {
-                    RTLList(rtlList = state.rtlList, onItemClick = { item ->
-                        onEventSent(
-                            RTLListContract.Event.RTLListItemSelection(
-                                item
+                    Column {
+                        SearchBarWithButton(
+                            placeholder = stringResource(R.string.rtl_list_search_placeholder),
+                            searchText = state.searchText,
+                            onSearchClicked = { searchText ->
+                                onEventSent(RTLListContract.Event.Search(searchText))
+                            })
+                        RTLList(rtlList = state.rtlList, onItemClick = { item ->
+                            onEventSent(
+                                RTLListContract.Event.RTLListItemSelection(
+                                    item
+                                )
                             )
-                        )
-                    }, onEndReached = { onEventSent(RTLListContract.Event.LoadMoreItems) })
+                        }, onEndReached = { onEventSent(RTLListContract.Event.LoadMoreItems) })
+                    }
                     PullToRefreshContainer(
                         state = pullRefreshState,
                         modifier = Modifier.align(Alignment.TopCenter)
@@ -121,7 +131,8 @@ fun UsersScreenSuccessPreview() {
             isError = false,
             start = 0,
             rows = 20,
-            maxItems = Int.MAX_VALUE
+            maxItems = Int.MAX_VALUE,
+            searchText = ""
         ),
         effectFlow = null,
         onEventSent = {},
@@ -139,7 +150,8 @@ fun UsersScreenErrorPreview() {
             isError = true,
             start = 0,
             rows = 20,
-            maxItems = Int.MAX_VALUE
+            maxItems = Int.MAX_VALUE,
+            searchText = ""
         ),
         effectFlow = null,
         onEventSent = {},

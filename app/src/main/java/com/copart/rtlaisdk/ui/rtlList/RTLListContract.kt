@@ -12,6 +12,7 @@ class RTLListContract {
         data class RTLListItemSelection(val rtlListItem: RTLListItem) : Event()
         object NewRTLRequest : Event()
         object LoadMoreItems : Event()
+        data class Search(val searchText: String) : Event()
     }
 
     data class State(
@@ -20,7 +21,8 @@ class RTLListContract {
         val isError: Boolean,
         val start: Int,
         val rows: Int,
-        val maxItems: Int
+        val maxItems: Int,
+        val searchText: String
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

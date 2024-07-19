@@ -19,7 +19,8 @@ class RTLListViewModel(private val rtlRepository: RTLRepository) :
         isError = false,
         start = 0,
         rows = 20,
-        maxItems = Int.MAX_VALUE
+        maxItems = Int.MAX_VALUE,
+        searchText = ""
     )
 
     override fun handleEvents(event: RTLListContract.Event) {
@@ -34,6 +35,7 @@ class RTLListViewModel(private val rtlRepository: RTLRepository) :
                 setState { copy(start = 0, rtlList = emptyList(), maxItems = Int.MAX_VALUE) }
                 getRtlList()
             }
+
             RTLListContract.Event.NewRTLRequest -> setEffect {
                 RTLListContract.Effect.Navigation.ToVINDecode
             }
@@ -43,6 +45,18 @@ class RTLListViewModel(private val rtlRepository: RTLRepository) :
                     val newStart = viewState.value.start + viewState.value.rows
                     loadMoreItems(newStart)
                 }
+            }
+
+            is RTLListContract.Event.Search -> {
+                setState {
+                    copy(
+                        start = 0,
+                        rtlList = emptyList(),
+                        maxItems = Int.MAX_VALUE,
+                        searchText = event.searchText
+                    )
+                }
+                getRtlList()
             }
         }
     }
@@ -59,7 +73,8 @@ class RTLListViewModel(private val rtlRepository: RTLRepository) :
             setState { copy(isLoading = true, isError = false) }
             val request = GetRTLListRequest(
                 start = viewState.value.start,
-                rows = viewState.value.rows
+                rows = viewState.value.rows,
+                secondarySearch = viewState.value.searchText
             )
             rtlRepository.getRtlList(request)
                 .onSuccess { response ->
