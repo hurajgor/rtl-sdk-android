@@ -2,7 +2,6 @@ package com.copart.rtlaisdk
 
 import android.app.Application
 import android.content.Context
-import com.copart.rtlaisdk.data.prefs.PreferencesManager
 import com.copart.rtlaisdk.di.appModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -19,8 +18,6 @@ class RTLAIApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         appContext = this
-        val preferencesManager = PreferencesManager(appContext)
-        preferencesManager.removeKey(PreferencesManager.RTL_LIST_SCROLL_POSITION)
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@RTLAIApplication)
