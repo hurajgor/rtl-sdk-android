@@ -31,6 +31,7 @@ import com.copart.rtlaisdk.ui.theme.Success1
 import com.copart.rtlaisdk.ui.theme.labelBold16
 import com.copart.rtlaisdk.ui.theme.labelBold18
 import com.copart.rtlaisdk.ui.theme.labelNormal14
+import com.copart.rtlaisdk.utils.DateUtils
 import com.copart.rtlaisdk.utils.RTLStatusConstants
 import com.copart.rtlaisdk.utils.buildAnnotatedStringWithBoldDynamicValue
 
@@ -102,7 +103,7 @@ fun RTLListItem(rtlData: RTLListItem) {
                 Text(
                     text = buildAnnotatedStringWithBoldDynamicValue(
                         stringResource(R.string.generated) + ": ",
-                        rtlData.created.toString(),
+                        DateUtils.isoToFriendlyDateTimeWithZone(rtlData.created.toString()),
                     ),
                     style = labelNormal14
                 )
