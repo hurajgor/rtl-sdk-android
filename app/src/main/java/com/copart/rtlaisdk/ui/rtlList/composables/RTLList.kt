@@ -12,10 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.copart.rtlaisdk.R
-import com.copart.rtlaisdk.RTLAIApplication
 import com.copart.rtlaisdk.data.model.RTLListItem
 import com.copart.rtlaisdk.data.model.buildRTLListItemPreview
 import com.copart.rtlaisdk.data.prefs.PreferencesManager
@@ -28,8 +28,8 @@ fun RTLList(
     onItemClick: (RTLListItem) -> Unit,
     onEndReached: () -> Unit
 ) {
-    val preferencesManager =
-        remember { RTLAIApplication.appContext?.let { PreferencesManager(it) } }
+    val context = LocalContext.current
+    val preferencesManager = remember { PreferencesManager(context) }
     val scrollPosition = preferencesManager?.get(RTL_LIST_SCROLL_POSITION, 0) ?: 0
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
 
