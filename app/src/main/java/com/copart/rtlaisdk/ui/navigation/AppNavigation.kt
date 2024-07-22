@@ -13,7 +13,7 @@ fun AppNavigation(onUploadSuccessful: (String, Boolean) -> Unit) {
 
     NavHost(
         navController = navController,
-        startDestination = Navigation.Routes.VIN_DECODE
+        startDestination = Navigation.Routes.RTL_LIST
     ) {
         composable(
             route = Navigation.Routes.RTL_LIST
