@@ -265,6 +265,8 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             VehicleDetailsContract.Event.RedirectToRTLLists -> setEffect {
                 VehicleDetailsContract.Effect.Navigation.ToRTLLists
             }
+
+            VehicleDetailsContract.Event.OnValidationFailed -> setEffect { VehicleDetailsContract.Effect.ValidationFailed }
         }
     }
 }

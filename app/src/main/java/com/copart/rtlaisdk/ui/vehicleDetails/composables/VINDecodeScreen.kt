@@ -26,15 +26,16 @@ fun VINDecodeScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val dataLoadedMessage = stringResource(R.string.data_is_loaded)
     val rtlRequestGeneratedMessage = stringResource(R.string.rtl_request_generated)
+    val validationFailedMessage = stringResource(R.string.please_fill_all_the_fields)
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.onEach { effect ->
             when (effect) {
                 is VehicleDetailsContract.Effect.DataWasLoaded -> {
-                    snackBarHostState.showSnackbar(
+                    /*snackBarHostState.showSnackbar(
                         message = dataLoadedMessage,
                         duration = SnackbarDuration.Short
-                    )
+                    )*/
                 }
 
                 is VehicleDetailsContract.Effect.Navigation.ToRTLResults -> onNavigationRequested(
@@ -52,6 +53,13 @@ fun VINDecodeScreen(
                 is VehicleDetailsContract.Effect.Navigation.ToRTLLists -> onNavigationRequested(
                     effect
                 )
+
+                is VehicleDetailsContract.Effect.ValidationFailed -> {
+                    snackBarHostState.showSnackbar(
+                        message = validationFailedMessage,
+                        duration = SnackbarDuration.Short
+                    )
+                }
             }
         }?.collect()
     }
@@ -92,11 +100,18 @@ fun VINDecodeScreen(
                     )
                 },
                 onGenerateRTL = { context ->
-                    onEventSent(
-                        VehicleDetailsContract.Event.OnGenerateRTLClicked(
-                            context
+                    if (state.vinNumber.isEmpty() || state.year.isEmpty() || state.make.isEmpty() || state.model.isEmpty() || state.selectedSeller != null || state.selectedPrimaryDamage != null || state.imageUris.contains(
+                            null
                         )
-                    )
+                    ) {
+                        onEventSent(VehicleDetailsContract.Event.OnValidationFailed)
+                    } else {
+                        onEventSent(
+                            VehicleDetailsContract.Event.OnGenerateRTLClicked(
+                                context
+                            )
+                        )
+                    }
                 },
                 onImageUrisChanged = { imageUri, index ->
                     onEventSent(

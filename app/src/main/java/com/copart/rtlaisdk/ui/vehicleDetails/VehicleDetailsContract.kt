@@ -26,6 +26,7 @@ class VehicleDetailsContract {
         data class OnPrimaryDamageSelected(val key: String, val value: String) : Event()
         data class IsAirBagsDeployed(val key: String, val value: String) : Event()
         data object RedirectToRTLLists : Event()
+        data object OnValidationFailed : Event()
     }
 
     data class State(
@@ -48,6 +49,7 @@ class VehicleDetailsContract {
 
     sealed class Effect : ViewSideEffect {
         data object DataWasLoaded : Effect()
+        data object ValidationFailed : Effect()
         data object RTLRequestGenerated : Effect()
 
         sealed class Navigation : Effect() {

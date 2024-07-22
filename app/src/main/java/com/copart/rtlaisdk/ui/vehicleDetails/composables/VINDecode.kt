@@ -66,7 +66,6 @@ import com.copart.rtlaisdk.data.model.VehicleYearsResponseBody
 import com.copart.rtlaisdk.ui.common.CustomDropDown
 import com.copart.rtlaisdk.ui.common.CustomTextField
 import com.copart.rtlaisdk.ui.theme.CopartBlue
-import com.copart.rtlaisdk.ui.theme.GreyChateau
 import com.copart.rtlaisdk.ui.theme.WhiteSmoke
 import com.copart.rtlaisdk.ui.theme.labelBold14
 import com.copart.rtlaisdk.ui.theme.labelNormal16
@@ -337,7 +336,6 @@ fun ImageTilePicker(
 
 @Composable
 fun DecodeButton(onGenerateRTL: (Context) -> Unit, context: Context) {
-    var isValid = true // Replace with your validation logic
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -348,10 +346,10 @@ fun DecodeButton(onGenerateRTL: (Context) -> Unit, context: Context) {
             onClick = { onGenerateRTL(context) },
             shape = ButtonDefaults.shape, // This uses the default rounded shape
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isValid) CopartBlue else GreyChateau,
+                containerColor = CopartBlue,
                 contentColor = Color.White
             ),
-            enabled = isValid,
+            enabled = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
