@@ -170,16 +170,11 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             )
                 .onSuccess { response ->
                     setState { copy(isLoading = false, isError = false) }
-                    setEffect {
-                        VehicleDetailsContract.Effect.UploadSuccessful(
-                            response.body?.requestId ?: "", true
-                        )
-                    }
+                    setEffect { VehicleDetailsContract.Effect.RTLRequestGenerated }
                 }
                 .onFailure { error ->
                     println(error)
-                    setState { copy(isError = false, isLoading = false) }
-                    setEffect { VehicleDetailsContract.Effect.UploadSuccessful("", false) }
+                    setState { copy(isError = true, isLoading = false) }
                 }
         }
     }
