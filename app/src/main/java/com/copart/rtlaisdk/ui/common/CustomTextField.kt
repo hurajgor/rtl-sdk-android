@@ -29,7 +29,8 @@ fun CustomTextField(
     shape: Shape = RoundedCornerShape(8.dp),
     textStyle: TextStyle = labelNormal14,
     readOnly: Boolean = false,
-    value: String = ""
+    value: String = "",
+    showFieldName: Boolean = true
 ) {
 
     val text = remember { mutableStateOf(value) }
@@ -38,11 +39,13 @@ fun CustomTextField(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Text(
-            text = fieldName,
-            style = labelBold16,
-            modifier = modifier.padding(top = 12.dp)
-        )
+        if (showFieldName) {
+            Text(
+                text = fieldName,
+                style = labelBold16,
+                modifier = modifier.padding(top = 12.dp)
+            )
+        }
         TextField(
             value = text.value,
             onValueChange = { newValue ->

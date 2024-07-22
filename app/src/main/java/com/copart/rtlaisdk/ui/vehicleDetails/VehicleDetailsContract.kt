@@ -10,6 +10,7 @@ import com.copart.rtlaisdk.data.model.VehicleYearsResponseBody
 import com.copart.rtlaisdk.ui.base.ViewEvent
 import com.copart.rtlaisdk.ui.base.ViewSideEffect
 import com.copart.rtlaisdk.ui.base.ViewState
+import com.copart.rtlaisdk.ui.rtlList.RTLListContract.Event
 
 class VehicleDetailsContract {
 
@@ -24,6 +25,8 @@ class VehicleDetailsContract {
         data class OnSellerSelected(val key: String, val value: String) : Event()
         data class OnPrimaryDamageSelected(val key: String, val value: String) : Event()
         data class IsAirBagsDeployed(val key: String, val value: String) : Event()
+        data object RedirectToRTLLists : Event()
+        data object OnValidationFailed : Event()
     }
 
     data class State(
@@ -46,10 +49,13 @@ class VehicleDetailsContract {
 
     sealed class Effect : ViewSideEffect {
         data object DataWasLoaded : Effect()
+        data object ValidationFailed : Effect()
+        data object RTLRequestGenerated : Effect()
         data class UploadSuccessful(val requestId: String, val isSuccess: Boolean) : Effect()
 
         sealed class Navigation : Effect() {
             data object ToRTLResults : Navigation()
+            data object ToRTLLists : Navigation()
         }
     }
 

@@ -22,6 +22,10 @@ fun VINDecodeScreenDestination(
                 is VehicleDetailsContract.Effect.Navigation.ToRTLResults -> {
                     // TODO: Navigate to results screen
                 }
+
+                is VehicleDetailsContract.Effect.Navigation.ToRTLLists -> {
+                    navController.navigateToRTLList()
+                }
             }
         },
         onUploadSuccessful = { requestId, isSuccess ->

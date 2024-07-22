@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.data
 
+import com.copart.rtlaisdk.data.model.GetRTLListRequest
 import com.copart.rtlaisdk.data.model.PrimaryDamagesResponse
 import com.copart.rtlaisdk.data.model.RTLListResponse
 import com.copart.rtlaisdk.data.model.SellersListResponse
@@ -10,6 +11,7 @@ import com.copart.rtlaisdk.data.model.VehicleModelsResponse
 import com.copart.rtlaisdk.data.model.VehicleYearsResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -18,7 +20,7 @@ import retrofit2.http.Path
 
 interface RTLApi {
     @POST(Endpoints.GET_RTL_LIST)
-    suspend fun getRTLList(): RTLListResponse
+    suspend fun getRTLList(@Body request: GetRTLListRequest): RTLListResponse
 
     @GET(Endpoints.GET_VEHICLE_YEARS)
     suspend fun getVehicleYears(): VehicleYearsResponse

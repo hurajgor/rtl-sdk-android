@@ -268,6 +268,12 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             is VehicleDetailsContract.Event.IsAirBagsDeployed -> {
                 setState { copy(isAirBagsDeployed = event.value) }
             }
+
+            VehicleDetailsContract.Event.RedirectToRTLLists -> setEffect {
+                VehicleDetailsContract.Effect.Navigation.ToRTLLists
+            }
+
+            VehicleDetailsContract.Event.OnValidationFailed -> setEffect { VehicleDetailsContract.Effect.ValidationFailed }
         }
     }
 }
