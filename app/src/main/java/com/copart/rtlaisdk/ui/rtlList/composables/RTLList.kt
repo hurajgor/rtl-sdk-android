@@ -28,8 +28,9 @@ fun RTLList(
     onItemClick: (RTLListItem) -> Unit,
     onEndReached: () -> Unit
 ) {
-    val preferencesManager = remember { PreferencesManager(RTLAIApplication.appContext) }
-    val scrollPosition = preferencesManager.get(RTL_LIST_SCROLL_POSITION, 0)
+    val preferencesManager =
+        remember { RTLAIApplication.appContext?.let { PreferencesManager(it) } }
+    val scrollPosition = preferencesManager?.get(RTL_LIST_SCROLL_POSITION, 0) ?: 0
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
 
     if (rtlList.isEmpty()) {
@@ -47,7 +48,7 @@ fun RTLList(
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
             .collectLatest {
-                preferencesManager.save(RTL_LIST_SCROLL_POSITION, it)
+                preferencesManager?.save(RTL_LIST_SCROLL_POSITION, it)
             }
     }
 

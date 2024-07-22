@@ -11,8 +11,7 @@ import org.koin.core.logger.Level
 class RTLAIApplication : Application() {
 
     companion object {
-        lateinit var appContext: Context
-            private set
+        var appContext: Context? = null
     }
 
     override fun onCreate() {
