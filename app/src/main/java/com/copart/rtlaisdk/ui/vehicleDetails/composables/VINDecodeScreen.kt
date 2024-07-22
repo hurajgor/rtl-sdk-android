@@ -107,7 +107,7 @@ fun VINDecodeScreen(
                     )
                 },
                 onGenerateRTL = { context ->
-                    if (state.vinNumber.isEmpty() || state.year.isEmpty() || state.make.isEmpty() || state.model.isEmpty() || state.selectedSeller != null || state.selectedPrimaryDamage != null || state.imageUris.contains(
+                    if (state.vinNumber.isEmpty() || state.year.isEmpty() || state.make.isEmpty() || state.model.isEmpty() || state.selectedSeller == null || state.selectedPrimaryDamage == null || state.imageUris.contains(
                             null
                         )
                     ) {
