@@ -24,19 +24,32 @@ fun VINDecodeScreen(
     onNavigationRequested: (navigationEffect: VehicleDetailsContract.Effect.Navigation) -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
-    val snackBarMessage = stringResource(R.string.data_is_loaded)
+    val dataLoadedMessage = stringResource(R.string.data_is_loaded)
+    val rtlRequestGeneratedMessage = stringResource(R.string.rtl_request_generated)
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.onEach { effect ->
             when (effect) {
                 is VehicleDetailsContract.Effect.DataWasLoaded -> {
                     snackBarHostState.showSnackbar(
-                        message = snackBarMessage,
+                        message = dataLoadedMessage,
                         duration = SnackbarDuration.Short
                     )
                 }
 
                 is VehicleDetailsContract.Effect.Navigation.ToRTLResults -> onNavigationRequested(
+                    effect
+                )
+
+                VehicleDetailsContract.Effect.RTLRequestGenerated -> {
+                    snackBarHostState.showSnackbar(
+                        message = rtlRequestGeneratedMessage,
+                        duration = SnackbarDuration.Short
+                    )
+                    onEventSent(VehicleDetailsContract.Event.RedirectToRTLLists)
+                }
+
+                is VehicleDetailsContract.Effect.Navigation.ToRTLLists -> onNavigationRequested(
                     effect
                 )
             }

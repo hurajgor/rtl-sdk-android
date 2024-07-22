@@ -46,3 +46,14 @@ object Navigation {
 fun NavController.navigateToVinDecode() {
     navigate(route = Navigation.Routes.VIN_DECODE)
 }
+
+fun NavController.navigateToRTLList() {
+    navigate(route = Navigation.Routes.RTL_LIST) {
+        // Clear the back stack up to the start destination
+        popUpTo(Navigation.Routes.RTL_LIST) {
+            inclusive = true
+        }
+        // Avoid multiple instances of the same destination
+        launchSingleTop = true
+    }
+}
