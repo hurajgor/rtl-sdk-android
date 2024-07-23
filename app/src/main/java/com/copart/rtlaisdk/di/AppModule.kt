@@ -1,6 +1,6 @@
 package com.copart.rtlaisdk.di
 
-import com.copart.rtlaisdk.RTLAIApplication
+import com.copart.rtlaisdk.MainActivity
 import com.copart.rtlaisdk.data.Endpoints
 import com.copart.rtlaisdk.data.RTLApi
 import okhttp3.OkHttpClient
@@ -14,7 +14,7 @@ val appModule = module {
         OkHttpClient.Builder().addInterceptor { chain ->
             val original = chain.request()
             val requestBuilder = original.newBuilder()
-            RTLAIApplication.rtlClientParams?.let {
+            MainActivity.rtlClientParams?.let {
                 requestBuilder.header("Cookie", it.sessionCookie)
             }
             requestBuilder.header("sitecode", "CPRTUS")

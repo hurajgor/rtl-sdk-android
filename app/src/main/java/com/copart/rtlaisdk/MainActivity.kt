@@ -13,11 +13,16 @@ import com.copart.rtlaisdk.ui.theme.RTLAISDKTheme
 import com.google.gson.Gson
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        var rtlClientParams: RTLClientParams? = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val params = intent.getStringExtra("params")
         if (!params.isNullOrEmpty()) {
-            RTLAIApplication.rtlClientParams = Gson().fromJson(params, RTLClientParams::class.java)
+            rtlClientParams = Gson().fromJson(params, RTLClientParams::class.java)
         }
         setContent {
             RTLAISDKTheme {

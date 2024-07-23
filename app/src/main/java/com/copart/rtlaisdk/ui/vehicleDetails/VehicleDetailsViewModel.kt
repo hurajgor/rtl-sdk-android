@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.viewModelScope
-import com.copart.rtlaisdk.RTLAIApplication
+import com.copart.rtlaisdk.MainActivity
 import com.copart.rtlaisdk.data.RTLRepository
 import com.copart.rtlaisdk.data.model.RTLUploadMetadata
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
@@ -202,7 +202,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             is VehicleDetailsContract.Event.Retry -> getVehicleYearsAndMakes()
             is VehicleDetailsContract.Event.OnVINChanged -> setState { copy(vinNumber = event.vin) }
             is VehicleDetailsContract.Event.OnGenerateRTLClicked -> {
-                val rtlClientParams = RTLAIApplication.rtlClientParams
+                val rtlClientParams = MainActivity.rtlClientParams
                 val metaData = RTLUploadMetadata(
                     seller_id = rtlClientParams?.sellerId ?: "",
                     vin_number = viewState.value.vinNumber,
