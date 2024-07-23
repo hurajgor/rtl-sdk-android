@@ -1,6 +1,8 @@
 package com.copart.rtlaisdk.ui.vehicleDetails
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.viewModelScope
@@ -14,6 +16,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
 
 class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     BaseViewModel<VehicleDetailsContract.Event, VehicleDetailsContract.State, VehicleDetailsContract.Effect>() {
@@ -138,16 +141,16 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         partName: String,
         fileUri: Uri?
     ): MultipartBody.Part {
-        val inputStream = fileUri?.let { context.contentResolver.openInputStream(it) }
-        val requestFile = inputStream?.readBytes()?.let {
-            RequestBody.create(
-                context.contentResolver.getType(fileUri)?.toMediaTypeOrNull(), it
+        val bitmap = BitmapFactory.decodeStream(fileUri?.let {
+            context.contentResolver.openInputStream(
+                it
             )
-        }
-        return MultipartBody.Part.createFormData(
-            partName,
-            "${partName}.jpg", requestFile!!
-        )
+        })
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream) // Adjust quality as needed
+        val requestBody =
+            RequestBody.create("image/jpeg".toMediaTypeOrNull(), outputStream.toByteArray())
+        return MultipartBody.Part.createFormData(partName, "${partName}.jpg", requestBody)
     }
 
     private fun uploadRTL(context: Context, metadata: String, imageUris: List<Uri?>) {
