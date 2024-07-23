@@ -26,6 +26,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     }
 
     private fun getVehicleYearsAndMakes() {
+        setState { copy(isRTLFailure = false) }
         getVehicleYears()
         getVehicleMakes()
         getSellersList()
@@ -155,7 +156,14 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun uploadRTL(context: Context, metadata: String, imageUris: List<Uri?>) {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState {
+                copy(
+                    isLoading = true,
+                    isError = false,
+                    isRTLSuccess = false,
+                    isRTLFailure = false
+                )
+            }
             val metadataPart = createPartFromString(metadata)
 
             val imageFPPart = prepareFilePart(context, "imageFP", imageUris[0])
@@ -171,12 +179,12 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
                 imageRPPart
             )
                 .onSuccess { response ->
-                    setState { copy(isLoading = false, isError = false) }
+                    setState { copy(isLoading = false, isError = false, isRTLSuccess = true) }
                     setEffect { VehicleDetailsContract.Effect.RTLRequestGenerated }
                 }
                 .onFailure { error ->
                     println(error)
-                    setState { copy(isError = true, isLoading = false) }
+                    setState { copy(isError = true, isLoading = false, isRTLFailure = true) }
                 }
         }
     }
@@ -197,6 +205,8 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         isAirBagsDeployed = "No",
         isLoading = false,
         isError = false,
+        isRTLSuccess = false,
+        isRTLFailure = false
     )
 
     override fun handleEvents(event: VehicleDetailsContract.Event) {
