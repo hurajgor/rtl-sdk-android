@@ -45,6 +45,8 @@ class VehicleDetailsContract {
         val isAirBagsDeployed: String,
         val isLoading: Boolean,
         val isError: Boolean,
+        val isRTLSuccess: Boolean,
+        val isRTLFailure: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

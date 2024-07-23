@@ -22,4 +22,5 @@
     <string name="no_data_found">No data found!</string>
     <string name="rtl_request_generated">RTL Request Generated</string>
     <string name="please_fill_all_the_fields">Please fill all the fields.</string>
+    <string name="generic_error_msg">Something went wrong. Please try again.</string>
 </resources>

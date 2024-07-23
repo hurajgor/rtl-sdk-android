@@ -17,6 +17,8 @@ import com.copart.rtlaisdk.R
 
 @Composable
 fun NetworkError(
+    messageTop: String = stringResource(R.string.network_error_title),
+    messageBottom: String = stringResource(R.string.network_error_description),
     modifier: Modifier = Modifier,
     onRetryButtonClick: () -> Unit,
 ) {
@@ -26,13 +28,13 @@ fun NetworkError(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = stringResource(R.string.network_error_title),
+            text = messageTop,
 //            style = MaterialTheme.typography.h4,
             textAlign = TextAlign.Center,
         )
 
         Text(
-            text = stringResource(R.string.network_error_description),
+            text = messageBottom,
 //            style = MaterialTheme.typography.body1,
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
             textAlign = TextAlign.Center,

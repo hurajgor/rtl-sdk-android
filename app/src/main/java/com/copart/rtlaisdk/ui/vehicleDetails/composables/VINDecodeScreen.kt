@@ -77,6 +77,18 @@ fun VINDecodeScreen(
         when {
             state.isError -> NetworkError { onEventSent(VehicleDetailsContract.Event.Retry) }
             state.isLoading -> Progress()
+            state.isRTLSuccess -> {
+
+            }
+
+            state.isRTLFailure -> {
+                NetworkError(messageBottom = stringResource(R.string.generic_error_msg)) {
+                    onEventSent(
+                        VehicleDetailsContract.Event.Retry
+                    )
+                }
+            }
+
             else -> VINDecode(
                 yearList = state.yearsList,
                 makeList = state.makesList,
