@@ -22,10 +22,10 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     BaseViewModel<VehicleDetailsContract.Event, VehicleDetailsContract.State, VehicleDetailsContract.Effect>() {
 
     init {
-        getVehicleYearsAndMakes()
+        initialize()
     }
 
-    private fun getVehicleYearsAndMakes() {
+    private fun initialize() {
         setState { copy(isRTLFailure = false) }
         getVehicleYears()
         getVehicleMakes()
@@ -211,7 +211,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     override fun handleEvents(event: VehicleDetailsContract.Event) {
         when (event) {
-            is VehicleDetailsContract.Event.Retry -> getVehicleYearsAndMakes()
+            is VehicleDetailsContract.Event.Retry -> initialize()
             is VehicleDetailsContract.Event.OnVINChanged -> setState { copy(vinNumber = event.vin) }
             is VehicleDetailsContract.Event.OnGenerateRTLClicked -> {
                 val metaData = RTLUploadMetadata(
