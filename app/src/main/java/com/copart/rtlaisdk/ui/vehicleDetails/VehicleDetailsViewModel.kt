@@ -35,7 +35,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getVehicleMakes() {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getVehicleMakes(VEHICLE_TYPE_CODE_MAPPING.AUTOMOBILES)
                 .onSuccess { response ->
@@ -55,7 +55,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getVehicleYears() {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getVehicleYears()
                 .onSuccess { response ->
@@ -75,7 +75,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getSellersList() {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getSellersList()
                 .onSuccess { response ->
@@ -95,7 +95,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getVehicleModel(make: String) {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getVehicleModels(make)
                 .onSuccess { response ->
@@ -115,7 +115,7 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
 
     private fun getPrimaryDamages() {
         viewModelScope.launch {
-            setState { copy(isLoading = true, isError = false) }
+            setState { copy(isLoading = false, isError = false) }
 
             rtlRepository.getPrimaryDamages()
                 .onSuccess { response ->
