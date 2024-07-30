@@ -18,4 +18,6 @@ object Endpoints {
     const val PRIMARY_DAMAGES_LIST = "adjuster/data/v1/primary-damages"
 
     const val UPLOAD_RTL = "adjuster/api/v1/otl/upload"
+
+    const val GET_RTL_ITEM = "adjuster/api/v1/otl/details/{requestId}"
 }

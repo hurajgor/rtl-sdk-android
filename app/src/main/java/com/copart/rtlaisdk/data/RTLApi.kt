@@ -2,6 +2,7 @@ package com.copart.rtlaisdk.data
 
 import com.copart.rtlaisdk.data.model.GetRTLListRequest
 import com.copart.rtlaisdk.data.model.PrimaryDamagesResponse
+import com.copart.rtlaisdk.data.model.RTLDetailsResponse
 import com.copart.rtlaisdk.data.model.RTLListResponse
 import com.copart.rtlaisdk.data.model.SellersListResponse
 import com.copart.rtlaisdk.data.model.UploadRTLResponse
@@ -49,4 +50,7 @@ interface RTLApi {
         @Part imageRD: MultipartBody.Part,
         @Part imageRP: MultipartBody.Part
     ): UploadRTLResponse
+
+    @GET(Endpoints.GET_RTL_ITEM)
+    suspend fun getRTLDetails(@Path("requestId") requestId: String): RTLDetailsResponse
 }

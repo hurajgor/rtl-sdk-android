@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.ui.rtlList
 
+import com.copart.rtlaisdk.data.model.RTLDetailsResponseBody
 import com.copart.rtlaisdk.data.model.RTLListItem
 import com.copart.rtlaisdk.ui.base.ViewEvent
 import com.copart.rtlaisdk.ui.base.ViewSideEffect
@@ -22,7 +23,8 @@ class RTLListContract {
         val start: Int,
         val rows: Int,
         val maxItems: Int,
-        val searchText: String
+        val searchText: String,
+        val rtlDetails: RTLDetailsResponseBody?
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {
