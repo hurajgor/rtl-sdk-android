@@ -140,18 +140,32 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     private fun prepareFilePart(
         context: Context,
         partName: String,
-        fileUri: Uri?
+        fileUri: Uri?,
+        maxSizeBytes: Int = 1048576
     ): MultipartBody.Part {
         val bitmap = BitmapFactory.decodeStream(fileUri?.let {
             context.contentResolver.openInputStream(
                 it
             )
         })
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream) // Adjust quality as needed
-        val requestBody =
-            RequestBody.create("image/jpeg".toMediaTypeOrNull(), outputStream.toByteArray())
+        val compressedBytes = compressBitmap(bitmap, maxSizeBytes)
+
+        val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), compressedBytes)
         return MultipartBody.Part.createFormData(partName, "${partName}.jpg", requestBody)
+    }
+
+    private fun compressBitmap(bitmap: Bitmap, maxSizeBytes: Int, quality: Int = 100): ByteArray {
+        var outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+
+        var compressedQuality = quality
+        while (outputStream.toByteArray().size > maxSizeBytes && compressedQuality > 5) {
+            outputStream = ByteArrayOutputStream()
+            compressedQuality -= 5
+            bitmap.compress(Bitmap.CompressFormat.JPEG, compressedQuality, outputStream)
+        }
+
+        return outputStream.toByteArray()
     }
 
     private fun uploadRTL(context: Context, metadata: String, imageUris: List<Uri?>) {
