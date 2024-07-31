@@ -92,7 +92,7 @@ val labelBold16: TextStyle
         )
     }
 
-val labelBold18: TextStyle
+val labelBold20: TextStyle
     @Composable
     get() {
         return TextStyle(
@@ -100,6 +100,17 @@ val labelBold18: TextStyle
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             lineHeight = 16.sp,
+            letterSpacing = 0.5.sp
+        )
+    }
+
+val labelBold24: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
             letterSpacing = 0.5.sp
         )
     }

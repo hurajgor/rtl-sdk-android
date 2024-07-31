@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     BaseViewModel<VehicleDetailsContract.Event, VehicleDetailsContract.State, VehicleDetailsContract.Effect>() {
@@ -161,7 +163,8 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
                     isLoading = true,
                     isError = false,
                     isRTLSuccess = false,
-                    isRTLFailure = false
+                    isRTLFailure = false,
+                    errorMessage = ""
                 )
             }
             val metadataPart = createPartFromString(metadata)
@@ -183,8 +186,25 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
                     setEffect { VehicleDetailsContract.Effect.RTLRequestGenerated }
                 }
                 .onFailure { error ->
-                    println(error)
-                    setState { copy(isError = true, isLoading = false, isRTLFailure = true) }
+                    var errorMessage = ""
+                    try {
+                        val jsonString = JSONObject(
+                            (error as HttpException).response()?.errorBody()?.string() ?: ""
+                        )
+                        val errorObject = jsonString.getJSONObject("error")
+                        val message = errorObject.getString("message")
+                        errorMessage = message
+                    } catch (e: Exception) {
+
+                    }
+                    setState {
+                        copy(
+                            isError = false,
+                            isLoading = false,
+                            isRTLFailure = true,
+                            errorMessage = errorMessage
+                        )
+                    }
                 }
         }
     }
@@ -206,7 +226,8 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         isLoading = false,
         isError = false,
         isRTLSuccess = false,
-        isRTLFailure = false
+        isRTLFailure = false,
+        errorMessage = ""
     )
 
     override fun handleEvents(event: VehicleDetailsContract.Event) {
@@ -280,6 +301,9 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             }
 
             VehicleDetailsContract.Event.OnValidationFailed -> setEffect { VehicleDetailsContract.Effect.ValidationFailed }
+            is VehicleDetailsContract.Event.RetryUpload -> {
+                setState { copy(isRTLFailure = false, errorMessage = "") }
+            }
         }
     }
 }

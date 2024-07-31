@@ -44,7 +44,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,17 +62,14 @@ import coil.compose.rememberAsyncImagePainter
 import com.copart.rtlaisdk.CameraActivity
 import com.copart.rtlaisdk.R
 import com.copart.rtlaisdk.data.model.ImagePlaceholder
-import com.copart.rtlaisdk.data.model.PrimaryDamagesItem
-import com.copart.rtlaisdk.data.model.SellersListItem
-import com.copart.rtlaisdk.data.model.VehicleMakesResponseBody
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
-import com.copart.rtlaisdk.data.model.VehicleYearsResponseBody
 import com.copart.rtlaisdk.ui.common.CustomDropDown
 import com.copart.rtlaisdk.ui.common.CustomTextField
 import com.copart.rtlaisdk.ui.theme.CopartBlue
 import com.copart.rtlaisdk.ui.theme.WhiteSmoke
 import com.copart.rtlaisdk.ui.theme.labelBold14
 import com.copart.rtlaisdk.ui.theme.labelNormal16
+import com.copart.rtlaisdk.ui.vehicleDetails.VehicleDetailsContract
 import com.copart.rtlaisdk.utils.getWindowWidth
 import com.copart.rtlaisdk.utils.overrideParentHorizontalPadding
 import com.copart.rtlaisdk.utils.toDp
@@ -82,12 +78,7 @@ import compose.icons.tablericons.Key
 
 @Composable
 fun VINDecode(
-    yearList: List<VehicleYearsResponseBody>,
-    makeList: List<VehicleMakesResponseBody>,
-    modelsResponse: VehicleModelsResponse,
-    sellersList: List<SellersListItem>,
-    primaryDamages: List<PrimaryDamagesItem>,
-    imageUris: List<Uri?>,
+    state: VehicleDetailsContract.State,
     onVinChanged: (String) -> Unit,
     onYearSelected: (String, String) -> Unit,
     onMakeSelected: (String, String) -> Unit,
@@ -101,6 +92,13 @@ fun VINDecode(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val imagePickerState = rememberLazyListState()
+    val selectedVin = state.vinNumber
+    val selectedYear = state.year
+    val selectedMake = state.make
+    val selectedModel = state.model
+    val selectedSeller = state.selectedSeller
+    val selectedPrimaryDamage = state.selectedPrimaryDamage
+    val selectedAirBags = state.isAirBagsDeployed
 
     Column(
         modifier = Modifier
@@ -111,7 +109,7 @@ fun VINDecode(
     ) {
         VINDecodeHeader()
         ImageTilePicker(
-            imageUris,
+            state.imageUris,
             onImageUrisChanged,
             context,
             imagePickerState
@@ -119,27 +117,32 @@ fun VINDecode(
         CustomTextField(
             stringResource(id = R.string.vin),
             stringResource(R.string.vin_placeholder),
-            onTextChanged = onVinChanged
+            onTextChanged = onVinChanged,
+            value = selectedVin,
         )
         CustomDropDown(
             fieldName = "Year",
             showHeader = true,
-            options = yearList.map { Pair(it.code.toString(), it.code.toString()) },
+            options = state.yearsList.map { Pair(it.code.toString(), it.code.toString()) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            onValueSelected = onYearSelected
+            onValueSelected = onYearSelected,
+            selectedValue = selectedYear,
+            selectedKey = selectedYear
         )
         CustomDropDown(
             fieldName = "Make",
             showHeader = true,
-            options = makeList.map { Pair(it.code.toString(), it.desc.toString()) },
+            options = state.makesList.map { Pair(it.code.toString(), it.desc.toString()) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            onValueSelected = onMakeSelected
+            onValueSelected = onMakeSelected,
+            selectedValue = selectedMake,
+            selectedKey = state.makesList.find { it.desc == selectedMake }?.code.toString()
         )
-        modelsResponse.body?.list?.map { Pair(it.desc.toString(), it.desc.toString()) }?.let {
+        state.modelsResponse.body?.list?.map { Pair(it.desc.toString(), it.desc.toString()) }?.let {
             CustomDropDown(
                 fieldName = "Model",
                 showHeader = true,
@@ -147,11 +150,13 @@ fun VINDecode(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
-                onValueSelected = onModelSelected
+                onValueSelected = onModelSelected,
+                selectedValue = selectedModel,
+                selectedKey = selectedModel
             )
         }
         CustomDropDown(
-            options = sellersList.map {
+            options = state.sellersList.map {
                 Pair(
                     it.id,
                     "${it.id} - ${it.label} (${it.sc}, ${it.ss})"
@@ -162,10 +167,13 @@ fun VINDecode(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            onValueSelected = onSellerSelected
+            onValueSelected = onSellerSelected,
+            selectedValue = if (selectedSeller != null) "${selectedSeller.id} - ${selectedSeller.label} (${selectedSeller.sc}, ${selectedSeller.ss})" else "",
+            selectedKey = selectedSeller?.id ?: ""
+
         )
         CustomDropDown(
-            options = primaryDamages.map {
+            options = state.primaryDamages.map {
                 Pair(
                     it.code,
                     it.desc
@@ -176,7 +184,9 @@ fun VINDecode(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            onValueSelected = onPrimaryDamageSelected
+            onValueSelected = onPrimaryDamageSelected,
+            selectedValue = selectedPrimaryDamage?.desc ?: "",
+            selectedKey = selectedPrimaryDamage?.code ?: ""
         )
         CustomDropDown(
             options = listOf(Pair("Yes", "Yes"), Pair("No", " No")),
@@ -186,8 +196,8 @@ fun VINDecode(
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             onValueSelected = isAirBagsDeployed,
-            selectedValue = "No",
-            selectedKey = "No"
+            selectedValue = selectedAirBags,
+            selectedKey = selectedAirBags
         )
         DecodeButton(onGenerateRTL, context)
     }
@@ -403,14 +413,26 @@ fun VINDecodeHeader() {
 @Composable
 fun VINDecodePreview() {
     VINDecode(
-        yearList = emptyList(),
-        makeList = emptyList(),
-        modelsResponse = VehicleModelsResponse(),
-        sellersList = emptyList(),
-        imageUris = remember {
-            mutableStateListOf<Uri?>(null, null, null, null)
-        },
-        primaryDamages = emptyList(),
+        state = VehicleDetailsContract.State(
+            vinNumber = "",
+            year = "",
+            make = "",
+            model = "",
+            yearsList = emptyList(),
+            makesList = emptyList(),
+            modelsResponse = VehicleModelsResponse(),
+            imageUris = listOf<Uri?>(null, null, null, null),
+            sellersList = arrayListOf(),
+            selectedSeller = null,
+            primaryDamages = emptyList(),
+            selectedPrimaryDamage = null,
+            isAirBagsDeployed = "No",
+            isLoading = false,
+            isError = false,
+            isRTLSuccess = false,
+            isRTLFailure = false,
+            errorMessage = ""
+        ),
         onVinChanged = {},
         onGenerateRTL = {},
         onMakeSelected = { _, _ -> },

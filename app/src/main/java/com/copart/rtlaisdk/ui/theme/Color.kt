@@ -17,3 +17,6 @@ val Success1 = Color(0xff489D40)
 
 val WhiteSmoke = Color(0xFFF0F0F0)
 val GreyChateau = Color(0xFF939AA4)
+
+val Green = Color(0xff066000)
+val GreenChateau = Color(0xff2BB44A)

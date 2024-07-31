@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.ui.vehicleDetails.composables
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -10,9 +11,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import com.copart.rtlaisdk.R
 import com.copart.rtlaisdk.ui.base.SIDE_EFFECTS_KEY
+import com.copart.rtlaisdk.ui.common.FailureScreen
 import com.copart.rtlaisdk.ui.common.NetworkError
 import com.copart.rtlaisdk.ui.common.Progress
+import com.copart.rtlaisdk.ui.common.SuccessScreen
 import com.copart.rtlaisdk.ui.vehicleDetails.VehicleDetailsContract
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -29,6 +33,10 @@ fun VINDecodeScreen(
     val rtlRequestGeneratedMessage = stringResource(R.string.rtl_request_generated)
     val validationFailedMessage = stringResource(R.string.please_fill_all_the_fields)
 
+    BackHandler(enabled = state.isRTLFailure) {
+        onEventSent(VehicleDetailsContract.Event.RetryUpload)
+    }
+
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.onEach { effect ->
             when (effect) {
@@ -44,10 +52,7 @@ fun VINDecodeScreen(
                 )
 
                 VehicleDetailsContract.Effect.RTLRequestGenerated -> {
-                    snackBarHostState.showSnackbar(
-                        message = rtlRequestGeneratedMessage,
-                        duration = SnackbarDuration.Short
-                    )
+                    delay(500)
                     onEventSent(VehicleDetailsContract.Event.RedirectToRTLLists)
                 }
 
@@ -72,25 +77,17 @@ fun VINDecodeScreen(
         when {
             state.isError -> NetworkError { onEventSent(VehicleDetailsContract.Event.Retry) }
             state.isLoading -> Progress()
-            state.isRTLSuccess -> {
-
-            }
-
+            state.isRTLSuccess -> SuccessScreen(message = rtlRequestGeneratedMessage)
             state.isRTLFailure -> {
-                NetworkError(messageBottom = stringResource(R.string.generic_error_msg)) {
-                    onEventSent(
-                        VehicleDetailsContract.Event.Retry
-                    )
+                var errorMessage = state.errorMessage
+                if (errorMessage.isEmpty()) {
+                    errorMessage = stringResource(R.string.generic_error_msg)
                 }
+                FailureScreen(message = errorMessage)
             }
 
             else -> VINDecode(
-                yearList = state.yearsList,
-                makeList = state.makesList,
-                sellersList = state.sellersList,
-                primaryDamages = state.primaryDamages,
-                modelsResponse = state.modelsResponse,
-                imageUris = state.imageUris,
+                state = state,
                 onVinChanged = { vin -> onEventSent(VehicleDetailsContract.Event.OnVINChanged(vin)) },
                 onModelSelected = { key, value ->
                     onEventSent(

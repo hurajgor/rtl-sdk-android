@@ -16,6 +16,7 @@ class VehicleDetailsContract {
 
     sealed class Event : ViewEvent {
         data object Retry : Event()
+        data object RetryUpload : Event()
         data class OnVINChanged(val vin: String) : Event()
         data class OnGenerateRTLClicked(val context: Context) : Event()
         data class OnYearSelected(val key: String, val value: String) : Event()
@@ -46,7 +47,8 @@ class VehicleDetailsContract {
         val isLoading: Boolean,
         val isError: Boolean,
         val isRTLSuccess: Boolean,
-        val isRTLFailure: Boolean
+        val isRTLFailure: Boolean,
+        val errorMessage: String
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

@@ -30,7 +30,7 @@ import com.copart.rtlaisdk.ui.theme.CopartBlue
 import com.copart.rtlaisdk.ui.theme.Error1
 import com.copart.rtlaisdk.ui.theme.Success1
 import com.copart.rtlaisdk.ui.theme.labelBold16
-import com.copart.rtlaisdk.ui.theme.labelBold18
+import com.copart.rtlaisdk.ui.theme.labelBold20
 import com.copart.rtlaisdk.ui.theme.labelNormal14
 import com.copart.rtlaisdk.utils.DateUtils
 import com.copart.rtlaisdk.utils.RTLStatusConstants
@@ -77,7 +77,7 @@ fun RTLListItem(rtlData: RTLListItem, onItemClick: (RTLListItem) -> Unit) {
                     text = "${rtlData.year} ${rtlData.make} ${rtlData.model}",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = labelBold18
+                    style = labelBold20
                 )
                 if (!rtlData.vinNumber.isNullOrEmpty()) {
                     Text(
