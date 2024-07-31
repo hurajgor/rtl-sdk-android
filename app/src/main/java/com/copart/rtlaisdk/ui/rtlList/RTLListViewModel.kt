@@ -15,6 +15,7 @@ class RTLListViewModel(private val rtlRepository: RTLRepository) :
 
     override fun setInitialState() = RTLListContract.State(
         rtlList = emptyList(),
+        rtlDetails = null,
         isLoading = false,
         isError = false,
         start = 0,
@@ -25,14 +26,19 @@ class RTLListViewModel(private val rtlRepository: RTLRepository) :
 
     override fun handleEvents(event: RTLListContract.Event) {
         when (event) {
-            is RTLListContract.Event.RTLListItemSelection -> setEffect {
-                RTLListContract.Effect.Navigation.ToRTLDetails(
-                    event.rtlListItem.requestId.toString()
-                )
+            is RTLListContract.Event.RTLListItemSelection -> {
+                getRTLDetails(event.rtlListItem.requestId.toString())
             }
 
             is RTLListContract.Event.Retry -> {
-                setState { copy(start = 0, rtlList = emptyList(), maxItems = Int.MAX_VALUE) }
+                setState {
+                    copy(
+                        start = 0,
+                        rtlList = emptyList(),
+                        maxItems = Int.MAX_VALUE,
+                        rtlDetails = null
+                    )
+                }
                 getRtlList()
             }
 
@@ -65,6 +71,26 @@ class RTLListViewModel(private val rtlRepository: RTLRepository) :
         viewModelScope.launch {
             setState { copy(start = newStart) }
             getRtlList()
+        }
+    }
+
+    private fun getRTLDetails(requestId: String) {
+        viewModelScope.launch {
+            setState { copy(isLoading = true, isError = false) }
+
+            rtlRepository.getRTLDetails(requestId)
+                .onSuccess { response ->
+                    setState {
+                        copy(
+                            rtlDetails = response.body,
+                            isLoading = false
+                        )
+                    }
+                    setEffect { RTLListContract.Effect.DataWasLoaded }
+                }
+                .onFailure {
+                    setState { copy(isError = true, isLoading = false) }
+                }
         }
     }
 

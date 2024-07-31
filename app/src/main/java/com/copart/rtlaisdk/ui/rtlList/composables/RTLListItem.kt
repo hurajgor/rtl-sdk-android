@@ -1,6 +1,7 @@
 package com.copart.rtlaisdk.ui.rtlList.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,14 +30,14 @@ import com.copart.rtlaisdk.ui.theme.CopartBlue
 import com.copart.rtlaisdk.ui.theme.Error1
 import com.copart.rtlaisdk.ui.theme.Success1
 import com.copart.rtlaisdk.ui.theme.labelBold16
-import com.copart.rtlaisdk.ui.theme.labelBold18
+import com.copart.rtlaisdk.ui.theme.labelBold20
 import com.copart.rtlaisdk.ui.theme.labelNormal14
 import com.copart.rtlaisdk.utils.DateUtils
 import com.copart.rtlaisdk.utils.RTLStatusConstants
 import com.copart.rtlaisdk.utils.buildAnnotatedStringWithBoldDynamicValue
 
 @Composable
-fun RTLListItem(rtlData: RTLListItem) {
+fun RTLListItem(rtlData: RTLListItem, onItemClick: (RTLListItem) -> Unit) {
     val status = when (rtlData.status) {
         RTLStatusConstants.AUTO_COMPLETED -> RTLStatusConstants.COMPLETED
         else -> rtlData.status
@@ -48,7 +49,9 @@ fun RTLListItem(rtlData: RTLListItem) {
         else -> CopartBlue
     }
 
-    Column {
+    Column(modifier = Modifier.clickable {
+        onItemClick(rtlData)
+    }) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -74,7 +77,7 @@ fun RTLListItem(rtlData: RTLListItem) {
                     text = "${rtlData.year} ${rtlData.make} ${rtlData.model}",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = labelBold18
+                    style = labelBold20
                 )
                 if (!rtlData.vinNumber.isNullOrEmpty()) {
                     Text(
@@ -132,5 +135,5 @@ fun RTLListItem(rtlData: RTLListItem) {
 @Preview(showBackground = true)
 @Composable
 fun RTLListItemPreview() {
-    RTLListItem(rtlData = buildRTLListItemPreview())
+    RTLListItem(rtlData = buildRTLListItemPreview()) {}
 }

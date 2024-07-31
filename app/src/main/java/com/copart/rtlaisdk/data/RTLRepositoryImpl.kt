@@ -2,6 +2,7 @@ package com.copart.rtlaisdk.data
 
 import com.copart.rtlaisdk.data.model.GetRTLListRequest
 import com.copart.rtlaisdk.data.model.PrimaryDamagesResponse
+import com.copart.rtlaisdk.data.model.RTLDetailsResponse
 import com.copart.rtlaisdk.data.model.RTLListResponse
 import com.copart.rtlaisdk.data.model.SellersListResponse
 import com.copart.rtlaisdk.data.model.UploadRTLResponse
@@ -23,7 +24,7 @@ class RTLRepositoryImpl(
     override suspend fun getRtlList(request: GetRTLListRequest): Result<RTLListResponse> =
         makeApiCall(dispatcher) {
             rtlApi.getRTLList(request)
-    }
+        }
 
     override suspend fun getVehicleYears(): Result<VehicleYearsResponse> = makeApiCall(dispatcher) {
         rtlApi.getVehicleYears()
@@ -63,6 +64,11 @@ class RTLRepositoryImpl(
     ): Result<UploadRTLResponse> =
         makeApiCall(dispatcher) {
             rtlApi.uploadRTL(metadata, imageFP, imageFD, imageRD, imageRP)
+        }
+
+    override suspend fun getRTLDetails(requestId: String): Result<RTLDetailsResponse> =
+        makeApiCall(dispatcher) {
+            rtlApi.getRTLDetails(requestId)
         }
 }
 

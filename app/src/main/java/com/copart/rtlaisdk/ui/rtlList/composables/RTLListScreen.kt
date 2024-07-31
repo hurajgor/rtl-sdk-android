@@ -1,5 +1,6 @@
 package com.copart.rtlaisdk.ui.rtlList.composables
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.copart.rtlaisdk.R
+import com.copart.rtlaisdk.data.model.RTLDetailsResponseBody
 import com.copart.rtlaisdk.data.model.buildRTLListItemPreview
 import com.copart.rtlaisdk.ui.base.SIDE_EFFECTS_KEY
 import com.copart.rtlaisdk.ui.common.NetworkError
@@ -54,6 +56,10 @@ fun RTLListScreen(
             onEventSent(RTLListContract.Event.Retry)
             pullRefreshState.endRefresh()
         }
+    }
+
+    BackHandler(enabled = state.rtlDetails != null) {
+        onEventSent(RTLListContract.Event.Retry)
     }
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
@@ -94,6 +100,9 @@ fun RTLListScreen(
         when {
             state.isLoading -> Progress()
             state.isError -> NetworkError { onEventSent(RTLListContract.Event.Retry) }
+            state.rtlDetails != null -> {
+                RTLDetailsText(rtlDetails = state.rtlDetails)
+            }
             else ->
                 Box(modifier = Modifier.nestedScroll(pullRefreshState.nestedScrollConnection)) {
                     Column {
@@ -120,6 +129,45 @@ fun RTLListScreen(
     }
 }
 
+@Composable
+fun RTLDetailsText(rtlDetails: RTLDetailsResponseBody) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(text = "VIN: ${rtlDetails.vin}", style = labelNormal14)
+        Text(text = "Claim Number: ${rtlDetails.claimNumber}", style = labelNormal14)
+        Text(text = "Description: ${rtlDetails.description}", style = labelNormal14)
+        Text(text = "Fuel Type: ${rtlDetails.fuelType}", style = labelNormal14)
+        Text(text = "Location: ${rtlDetails.location}", style = labelNormal14)
+        Text(text = "Threshold: ${rtlDetails.threshold}", style = labelNormal14)
+        Text(text = "Is EOTL: ${rtlDetails.isEOTL}", style = labelNormal14)
+        Text(text = "Confidence Label: ${rtlDetails.confidenceLabel}", style = labelNormal14)
+        Text(text = "Final Damage Score: ${rtlDetails.finalDamageScore}", style = labelNormal14)
+        Text(
+            text = "Final Non-Damage Score: ${rtlDetails.finalNonDamageScore}",
+            style = labelNormal14
+        )
+        Text(
+            text = "Flipped Confidence Label: ${rtlDetails.flippedConfidenceLabel}",
+            style = labelNormal14
+        )
+        Text(
+            text = "Flipped Final Damage Score: ${rtlDetails.flippedFinalDamageScore}",
+            style = labelNormal14
+        )
+        Text(
+            text = "Flipped Final Non-Damage Score: ${rtlDetails.flippedFinalNonDamageScore}",
+            style = labelNormal14
+        )
+        Text(
+            text = "Total Loss Review Status: ${rtlDetails.totalLossReviewStatus}",
+            style = labelNormal14
+        )
+        Text(
+            text = "Total Loss Review Description: ${rtlDetails.totalLossReviewDesc}",
+            style = labelNormal14
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun UsersScreenSuccessPreview() {
@@ -132,7 +180,8 @@ fun UsersScreenSuccessPreview() {
             start = 0,
             rows = 20,
             maxItems = Int.MAX_VALUE,
-            searchText = ""
+            searchText = "",
+            rtlDetails = null
         ),
         effectFlow = null,
         onEventSent = {},
@@ -151,7 +200,8 @@ fun UsersScreenErrorPreview() {
             start = 0,
             rows = 20,
             maxItems = Int.MAX_VALUE,
-            searchText = ""
+            searchText = "",
+            rtlDetails = null
         ),
         effectFlow = null,
         onEventSent = {},

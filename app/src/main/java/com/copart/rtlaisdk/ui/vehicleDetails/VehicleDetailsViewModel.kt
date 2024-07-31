@@ -2,7 +2,6 @@ package com.copart.rtlaisdk.ui.vehicleDetails
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.viewModelScope
@@ -12,12 +11,15 @@ import com.copart.rtlaisdk.data.model.RTLUploadMetadata
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
 import com.copart.rtlaisdk.ui.base.BaseViewModel
 import com.copart.rtlaisdk.utils.VEHICLE_TYPE_CODE_MAPPING
+import com.copart.rtlaisdk.utils.toCompressedBitmap
+import com.copart.rtlaisdk.utils.toRequestBody
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.io.ByteArrayOutputStream
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     BaseViewModel<VehicleDetailsContract.Event, VehicleDetailsContract.State, VehicleDetailsContract.Effect>() {
@@ -143,16 +145,16 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         partName: String,
         fileUri: Uri?
     ): MultipartBody.Part {
-        val bitmap = BitmapFactory.decodeStream(fileUri?.let {
-            context.contentResolver.openInputStream(
-                it
-            )
-        })
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream) // Adjust quality as needed
-        val requestBody =
-            RequestBody.create("image/jpeg".toMediaTypeOrNull(), outputStream.toByteArray())
-        return MultipartBody.Part.createFormData(partName, "${partName}.jpg", requestBody)
+        val maxWidth = 640
+        val maxHeight = 640
+        val compressFormat = Bitmap.CompressFormat.JPEG
+        val bitmapQuality = 50
+
+        val compressedBitmap =
+            fileUri?.toCompressedBitmap(context, maxWidth, maxHeight, compressFormat, bitmapQuality)
+        val requestBody = compressedBitmap?.toRequestBody(compressFormat, bitmapQuality)
+
+        return MultipartBody.Part.createFormData(partName, "${partName}.jpg", requestBody!!)
     }
 
     private fun uploadRTL(context: Context, metadata: String, imageUris: List<Uri?>) {
@@ -162,7 +164,8 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
                     isLoading = true,
                     isError = false,
                     isRTLSuccess = false,
-                    isRTLFailure = false
+                    isRTLFailure = false,
+                    errorMessage = ""
                 )
             }
             val metadataPart = createPartFromString(metadata)
@@ -184,8 +187,25 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
                     setEffect { VehicleDetailsContract.Effect.RTLRequestGenerated }
                 }
                 .onFailure { error ->
-                    println(error)
-                    setState { copy(isError = true, isLoading = false, isRTLFailure = true) }
+                    var errorMessage = ""
+                    try {
+                        val jsonString = JSONObject(
+                            (error as HttpException).response()?.errorBody()?.string() ?: ""
+                        )
+                        val errorObject = jsonString.getJSONObject("error")
+                        val message = errorObject.getString("message")
+                        errorMessage = message
+                    } catch (e: Exception) {
+
+                    }
+                    setState {
+                        copy(
+                            isError = false,
+                            isLoading = false,
+                            isRTLFailure = true,
+                            errorMessage = errorMessage
+                        )
+                    }
                 }
         }
     }
@@ -207,7 +227,8 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
         isLoading = false,
         isError = false,
         isRTLSuccess = false,
-        isRTLFailure = false
+        isRTLFailure = false,
+        errorMessage = ""
     )
 
     override fun handleEvents(event: VehicleDetailsContract.Event) {
@@ -282,6 +303,9 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
             }
 
             VehicleDetailsContract.Event.OnValidationFailed -> setEffect { VehicleDetailsContract.Effect.ValidationFailed }
+            is VehicleDetailsContract.Event.RetryUpload -> {
+                setState { copy(isRTLFailure = false, errorMessage = "") }
+            }
         }
     }
 }

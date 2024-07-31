@@ -40,7 +40,7 @@ fun RTLList(
     } else {
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             items(rtlList) { item ->
-                RTLListItem(rtlData = item)
+                RTLListItem(rtlData = item, onItemClick)
             }
         }
     }

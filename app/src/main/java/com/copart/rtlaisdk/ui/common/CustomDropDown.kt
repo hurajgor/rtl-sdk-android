@@ -36,12 +36,16 @@ fun CustomDropDown(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isExpandable by remember { mutableStateOf(true) }
+    var tempSelectedValue = selectedValue
+    if (selectedValue.isEmpty()) {
+        tempSelectedValue = "Select Option"
+    }
     var selectedOptionKey by remember { mutableStateOf(selectedKey) }
-    var selectedOptionValue by remember { mutableStateOf(selectedValue) }
+    var selectedOptionValue by remember { mutableStateOf(tempSelectedValue) }
 
     // Reset selectedOption when options list changes
     LaunchedEffect(options) {
-        selectedOptionValue = selectedValue
+        selectedOptionValue = tempSelectedValue
         selectedOptionKey = selectedKey
         isExpandable = options.isNotEmpty()
     }

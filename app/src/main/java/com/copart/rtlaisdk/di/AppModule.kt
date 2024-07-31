@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.UUID
 
 val appModule = module {
 
@@ -19,6 +20,7 @@ val appModule = module {
             }
             requestBuilder.header("sitecode", "CPRTUS")
             requestBuilder.header("appcode", "RTLAISDK")
+            requestBuilder.header("correlationId", UUID.randomUUID().toString())
             requestBuilder.method(original.method, original.body)
             val request = requestBuilder.build()
             chain.proceed(request)
