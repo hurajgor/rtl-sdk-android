@@ -2,7 +2,6 @@ package com.copart.rtlaisdk.ui.vehicleDetails
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.viewModelScope
@@ -11,12 +10,13 @@ import com.copart.rtlaisdk.data.model.RTLUploadMetadata
 import com.copart.rtlaisdk.data.model.VehicleModelsResponse
 import com.copart.rtlaisdk.ui.base.BaseViewModel
 import com.copart.rtlaisdk.utils.VEHICLE_TYPE_CODE_MAPPING
+import com.copart.rtlaisdk.utils.toCompressedBitmap
+import com.copart.rtlaisdk.utils.toRequestBody
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.io.ByteArrayOutputStream
 
 class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     BaseViewModel<VehicleDetailsContract.Event, VehicleDetailsContract.State, VehicleDetailsContract.Effect>() {
@@ -140,32 +140,18 @@ class VehicleDetailsViewModel(private val rtlRepository: RTLRepository) :
     private fun prepareFilePart(
         context: Context,
         partName: String,
-        fileUri: Uri?,
-        maxSizeBytes: Int = 1048576
+        fileUri: Uri?
     ): MultipartBody.Part {
-        val bitmap = BitmapFactory.decodeStream(fileUri?.let {
-            context.contentResolver.openInputStream(
-                it
-            )
-        })
-        val compressedBytes = compressBitmap(bitmap, maxSizeBytes)
+        val maxWidth = 640
+        val maxHeight = 640
+        val compressFormat = Bitmap.CompressFormat.JPEG
+        val bitmapQuality = 50
 
-        val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), compressedBytes)
-        return MultipartBody.Part.createFormData(partName, "${partName}.jpg", requestBody)
-    }
+        val compressedBitmap =
+            fileUri?.toCompressedBitmap(context, maxWidth, maxHeight, compressFormat, bitmapQuality)
+        val requestBody = compressedBitmap?.toRequestBody(compressFormat, bitmapQuality)
 
-    private fun compressBitmap(bitmap: Bitmap, maxSizeBytes: Int, quality: Int = 100): ByteArray {
-        var outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
-
-        var compressedQuality = quality
-        while (outputStream.toByteArray().size > maxSizeBytes && compressedQuality > 5) {
-            outputStream = ByteArrayOutputStream()
-            compressedQuality -= 5
-            bitmap.compress(Bitmap.CompressFormat.JPEG, compressedQuality, outputStream)
-        }
-
-        return outputStream.toByteArray()
+        return MultipartBody.Part.createFormData(partName, "${partName}.jpg", requestBody!!)
     }
 
     private fun uploadRTL(context: Context, metadata: String, imageUris: List<Uri?>) {
