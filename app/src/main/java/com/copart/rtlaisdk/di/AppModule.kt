@@ -1,12 +1,13 @@
 package com.copart.rtlaisdk.di
 
+import com.copart.rtlaisdk.BuildConfig
 import com.copart.rtlaisdk.data.Endpoints
 import com.copart.rtlaisdk.data.RTLApi
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.copart.rtlaisdk.BuildConfig
+import java.util.UUID
 
 val appModule = module {
 
@@ -19,6 +20,7 @@ val appModule = module {
                 .header("Cookie", sessionId)
                 .header("sitecode", "CPRTUS")
                 .header("appcode", "RTLAISDK")
+                .header("correlationId", UUID.randomUUID().toString())
                 .method(original.method, original.body)
             val request = requestBuilder.build()
             chain.proceed(request)
